@@ -8,3 +8,7 @@ Desktop.ini
 node_modules/
 bin/
 obj/
+
+# Claude Code — keep personal config and memories local
+.claude/settings.local.json
+.claude/memory/
