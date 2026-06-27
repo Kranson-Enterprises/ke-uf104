@@ -31,6 +31,16 @@ every saved memory with a one-line hook. See
 - **Quote paths that contain spaces** in every shell command, argument, script,
   and doc example. The Uniface install path has spaces, so this is mandatory.
   Full rule: [.claude/rules/quote-paths-with-spaces.md](.claude/rules/quote-paths-with-spaces.md).
+- **The repository is the source of truth** — edit objects in the IDE; round-trip
+  via XML Export/Import for version control; never use `/cpy` for definitions.
+  [.claude/rules/uniface-repository-source-of-truth.md](.claude/rules/uniface-repository-source-of-truth.md).
+- **Uniface CLI & build hygiene** — prefer the `/uniface-*` commands; resolve paths
+  from `usys.ini [install]`; production compiles use `/all /nodebug`; check exit
+  codes; migrate the repo before batch CLI.
+  [.claude/rules/uniface-cli-and-build-hygiene.md](.claude/rules/uniface-cli-and-build-hygiene.md).
+- **Keep secrets & proprietary content out of git** — no credentials in `.asn`;
+  Rocket docs stay in gitignored `webfetched/`; scan `git status`/`diff` before
+  committing. [.claude/rules/protect-secrets-and-proprietary.md](.claude/rules/protect-secrets-and-proprietary.md).
 
 ## Conventions
 
