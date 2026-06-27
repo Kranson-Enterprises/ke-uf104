@@ -12,3 +12,6 @@ obj/
 # Claude Code — keep personal config and memories local
 .claude/settings.local.json
 .claude/memory/
+
+# Saved copies of Rocket's proprietary/licensed docs — keep local, do not publish
+webfetched/
