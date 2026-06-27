@@ -31,7 +31,11 @@ What carries forward (you already know this):
 - **The assignment file (`.asn`)** — still how runtime is configured. ✅
 
 What's genuinely new or reworked:
-- A rebuilt IDE with a modern UI and a **Workspace**-centric model. ⚠️ `[verify]`
+- A rebuilt IDE whose **"modern UI" is an embedded Chromium browser (CEF)** — the
+  UI is HTML/CSS/JavaScript rendered by Chromium Embedded Framework and driven by
+  the native Uniface runtime, which is what makes it platform-portable. ✅
+  *Verified locally on 10.4.03 042 — see §1.1 Architecture.* The **Workspace**-
+  centric organization of dev work ⚠️ `[verify exact definition]`.
 - A cleaner separation between **development repository** and **deployment**. ✅
 - Stronger emphasis on **web components (Dynamic Server Pages / DSP)** with a
   documented JavaScript/browser API. ⚠️ `[verify exact DSP capabilities in 10.4]`
@@ -45,6 +49,35 @@ What's genuinely new or reworked:
 ### 1.1 The IDE and the Workspace
 - The Uniface 10 IDE is itself a Uniface application running on the Uniface
   runtime. ✅
+
+#### Architecture (verified locally on 10.4.03 042, 2026-06-27)
+Inspecting the running `ide.exe` (its loaded modules and child processes) shows
+the IDE is a **Chromium Embedded Framework (CEF) shell rendering an HTML/JS UI**,
+driven by the native Uniface runtime engine. Evidence:
+- `libcef.dll` = **CEF 141.0.5 / Chromium 141.0.7390.55**; `chrome_elf.dll` matches.
+- **8 × `cefrender.exe`** subprocesses — the classic Chromium multi-process model.
+- Native Uniface runtime layer present: `yrtl.dll` (10.4.03 042), plus `uob*`,
+  `lsapiw64` (licensing), `xerces-c` (XML), `libcryptou` (OpenSSL 3.5.6).
+
+Takeaway: the "modern UI" is **web technology in a browser shell**, not native
+Win32/WPF widgets — hence the platform-portability and Fluent-like styling. The
+embedded Chromium is kept close to upstream (141 is recent), a positive security
+signal.
+
+#### Launching the IDE from the command line (gotcha)
+The install paths contain spaces, so the `/adm` switch **must quote the entire
+token** (Rocket's own Start-Menu shortcut does exactly this), and the IDE expects
+to start in the project working directory:
+
+```
+"C:\Program Files\Rocket Uniface 10 Community Edition\common\bin\ide.exe" "/adm=C:\Program Files\Rocket Uniface 10 Community Edition\uniface\adm" ?
+```
+- Quote `"/adm=...path..."` as one argument — quoting only the path (or not at
+  all) makes Uniface look for `usys.ini` in the wrong place and the IDE exits
+  immediately. `usys.ini` lives at `uniface\adm\usys.ini` (where `/adm` points).
+- Working directory: `C:\Users\<user>\Rocket Uniface 10 Community Edition\project\`.
+- The trailing `?` is a real argument from Rocket's shortcut (not a typo).
+
 - Work is organized in a **Workspace** — your set of development objects and the
   development-time settings/assignment that back them. ⚠️ `[verify the precise
   Workspace definition and how many you typically maintain]`
