@@ -4,10 +4,11 @@
 > newcomer — up to speed on the Uniface 10 development environment, deployment
 > packaging, and runtime/environment management.
 >
-> **Status: DRAFT for review.** Items tagged **`[verify]`** are things I (Claude)
-> state with lower confidence and that should be confirmed against the official
-> Rocket Uniface documentation and your own hands-on experience before this doc
-> is treated as authoritative. Veteran corrections are expected and welcome.
+> **Status: VERIFIED DRAFT.** Most items were confirmed on 2026-06-27 by
+> inspecting a live Uniface 10.4.03 CE install (assignment files, `usys.ini`,
+> `common\bin`) — see §5 for what's resolved vs. still open. Items still tagged
+> **`[verify]`** are UI/behavioral points not derivable from files; confirm them
+> against the official Rocket Uniface docs or hands-on. Corrections welcome.
 
 Confidence legend used below:
 - ✅ **Confident** — stable, long-standing Uniface concept.
@@ -78,34 +79,49 @@ to start in the project working directory:
 - Working directory: `C:\Users\<user>\Rocket Uniface 10 Community Edition\project\`.
 - The trailing `?` is a real argument from Rocket's shortcut (not a typo).
 
-- Work is organized in a **Workspace** — your set of development objects and the
-  development-time settings/assignment that back them. ⚠️ `[verify the precise
-  Workspace definition and how many you typically maintain]`
+- Work is organized in a **project directory** (CE default
+  `C:\Users\<user>\Rocket Uniface 10 Community Edition\project\`, recorded as
+  `project=` in `usys.ini [install]`). It holds the dev assignment, the `.\dbms\`
+  repository databases, and the `.\resources` compile output. ✅ The IDE's own
+  "Workspace" term layered on top ⚠️ `[verify the precise in-IDE definition]`.
 - Development objects live in a **repository** (a DBMS). For Community Edition the
-  repository is backed by a **bundled database** rather than an external RDBMS.
-  ⚠️ `[verify which DB ships with 10.4 CE — historically SQLite-class]`
+  repository is a **bundled SQLite database** — `.\dbms\usys.db` via the `SLE`
+  driver (user data in `.\dbms\userdata.db`). ✅ *Verified in `common\adm\dbms.asn`.*
 
 ### 1.2 Object types you build
 - **Application Model** — entities, fields, keys, relationships, and modeled
   metadata that components inherit from. ✅
-- **Components:** ✅ for the categories, ⚠️ `[verify exact 10.4 type list/names]`
-  - **Form** — interactive UI component.
-  - **Service** — non-UI, operation-based logic (callable; in-process or remote).
-  - **Report** — output/printing.
-  - **Server Pages / DSP** — web UI (Dynamic Server Pages) served to a browser.
-  - **Session / entry** objects for web request handling. ⚠️ `[verify]`
+- **Components** (type abbreviations confirmed from the IDE's palette config in
+  `ide.asn`): ✅
+  - **FRM** — Form (interactive UI).
+  - **RPT** — Report (output/printing).
+  - **SVC** — Service (non-UI, operation-based; in-process or remote).
+  - **DSP** — Dynamic Server Page (web UI served to a browser).
+  - **USP** — (Uniface) Server Page (the other web component type).
+  - **ESV / SSV** — additional web/service component types present in 10.4. ⚠️
+    `[verify exact meaning of ESV/SSV]`
 - **ProcScript** in **triggers** and **operations**, with **signatures** defining
   callable interfaces (params: IN/OUT/INOUT). ✅
-- **Global objects**: includes, global ProcScript, message library, glyphs. ⚠️
+- **Global / library objects** (each has its own editor — see §1.3): Include
+  Script libraries (LIBINC), Snippet libraries (LIBSNP), Global ProcScript
+  libraries (LIBPRC), Projects (PRJ), and Application/Startup Shells (APS). ✅
 
 ### 1.3 Editors and workflow
-- Structure/model editors for entities and components, a script editor for
-  ProcScript, and a painter for Form layout. ⚠️ `[verify exact editor names/UX
-  in 10.4 — this is where I'm least sure of current naming]`
-- **Compile** turns development objects into runtime objects; compiler
-  output/messages surface in the IDE. ✅
+- The IDE ships dedicated editors, confirmed from `ide.asn`: **Component Editor**
+  (with Define Structure / Define Frames / Write Script / Design Layout
+  worksheets), **Entity Editor**, **Project Editor**, **Startup Shell Editor**,
+  **Snippet Library Editor**, **Include Library Editor**, and **Global ProcScript
+  Library Editor**. ✅ Navigation uses the **U-Bar** and **Smart Resource
+  Browsers**. ✅
+- **Compile** turns development objects into runtime objects written to
+  `$RESOURCES_OUTPUT` (`.\resources`); compiler output/messages surface in the
+  IDE. ✅
 - Typical loop: model → define component → write ProcScript in triggers/operations
-  → compile → test-run from the IDE → iterate. ✅
+  → compile → test-run from the IDE → iterate. ✅ Web components (DSP/USP) are
+  tested via a bundled **Tomcat** (CE default port 8080). ✅
+- **Migrating from Uniface 9?** The IDE has explicit v9→v10 migration logicals
+  (trigger/operation migration, inheritance handling). ✅ *Seen in `ide.asn`
+  `[LOGICALS]`.* (Note: relevant for v5–8 veterans only after a v9 step.)
 
 ### 1.4 Source management
 - Uniface supports **exporting development objects to text** (importable/exportable
@@ -130,11 +146,14 @@ application **without** the development environment:
 5. **Database connectivity** for the target DBMS. ✅
 
 ### 2.2 Where compiled objects go
-- Compiled objects are stored as records in a **runtime repository (DBMS)** and/or
-  exported to **files**, depending on how you assign storage. ⚠️ `[verify the
-  default in 10.4 and the recommended packaging path]`
-- A deployment typically points its assignment at the **runtime** repository/
-  resources, distinct from the development repository. ✅
+- Compilation writes runtime objects to the **`$RESOURCES_OUTPUT` directory**
+  (`.\resources` by default in the dev `ide.asn`). ✅ *Verified in `ide.asn`.*
+- For packaging, resources are distributed as **UAR files** (Uniface ARchive) —
+  the runtime's `[RESOURCES]` section lists either UAR files or resource
+  directories (e.g. Uniface's own `usys:ide.uar`). ✅ *Verified in `userver.asn`
+  `[RESOURCES]` ("Specify your UAR resource files or resource directories").*
+- A deployment points its assignment's `[RESOURCES]` at the packaged
+  resources/UARs, distinct from the development project. ✅
 
 ### 2.3 Producing a package
 - The IDE provides a way to **export/deploy** a compiled application set for
@@ -145,9 +164,14 @@ application **without** the development environment:
   runtime version}**, versioned and reproducible. ✅ (general principle)
 
 ### 2.4 Licensing
-- The runtime requires a **valid license** present in the environment. ✅
-- ⚠️ `[verify the 10.4 license artifact form (file vs. key) and how CE licensing
-  differs from full product]`
+- The runtime requires a **valid license**. Two forms exist in 10.4: ✅
+  - **Cloud licensing** — `ulic.exe` registers/activates/returns against a Rocket
+    cloud license server (Start-Menu shortcuts: *Cloud LM Registration*, *License
+    Activation/Return (Cloud Standalone)*; `ULIC_TIMEOUT` in `ulic.asn`). **This CE
+    install uses cloud licensing** — no local license file is present. ✅ *Verified.*
+  - **File-based (FlexLM)** — a `lservrc` license file referenced via
+    `$license_options LM_LICENSE_FILE=USYSLIC:lservrc` (seen in `userver.asn`),
+    used in server/enterprise setups. ✅
 
 ---
 
@@ -161,37 +185,60 @@ The `.asn` maps **logical** names to **physical** resources and holds runtime
 settings. The development environment and each deployed environment each have
 their own assignment. ✅
 
-Common sections (names are stable Uniface concepts; ✅ on the model, ⚠️ on
-remembering every exact header spelling in 10.4):
-- **`[SETTINGS]`** — runtime switches/parameters. ✅
-- **`[PATHS]`** — physical path mappings. ✅
-- **`[LOGICALS]`** — logical-name → value definitions (`$NAME` logicals). ✅
-- **Database/connection mapping** — associates entities/schemas with a DBMS
-  connector and connection string. ✅ `[verify the exact 10.4 section header —
-  historically the `[ENTITIES]`-style mapping with `tablename DBMS:database`]`
-- **Driver / connector settings** — per-connector options. ✅
-- **`[SERVICES_EXEC]`** / service routing — where services execute (local vs.
-  remote). ⚠️ `[verify header name]`
+Section headers confirmed from the shipped `ide.asn` / `dbms.asn` / `userver.asn`:
+- **`[SETTINGS]`** — runtime switches/parameters (`$NAME` settings). ✅
+- **`[LOGICALS]`** — logical-name → value definitions. ✅
+- **`[DRIVER_SETTINGS]`** — declares DBMS drivers and versions (e.g. `SLE U2.0`)
+  plus their `USYS$<drv>_PARAMS`. ✅
+- **`[PATHS]`** — physical path mappings **and DBMS connections**, via
+  `$logical DRIVER:connection`. ✅
+- **`[ENTITIES]`** — per-entity/schema overrides (present, often empty). ✅
+- **`[RESOURCES]`** — UAR files / resource directories. ✅
+- **`[FILES]`** — file redirections. ✅
+- **`[NET_SETTINGS]`** — network/TLS (e.g. `CERT_PROFILE`). ✅
+- **`[USER_3GL]`**, **`[FORMATTING]`** — 3GL registration, code-format rules. ✅
+- **`#file <logical>:adm\dbms.asn`** at the top **includes** another assignment —
+  this is how DB config is shared across assignments. ✅
+
+**DB-mapping syntax (verified, `dbms.asn`):**
+```
+[DRIVER_SETTINGS]
+SLE     U2.0
+USYS$SLE_PARAMS create db = on, identifiers = quoted
+[PATHS]
+$DBMS        SLE:.\dbms\usys.db                       ; SQLite file
+; $DBMS      PGS:PostgreSQL35W:ufdb|postgres|uniface  ; DRIVER:datasource:db|user|pwd
+$SYS  $DBMS
+$DEF  $DBMS_DEF
+```
+So the mapping is `$schemaLogical DRIVER:connection`, not the older
+`tablename DBMS:database` form I'd guessed.
 
 Promoting dev → test → prod is primarily **swapping the assignment file** (and the
 target DB/resources), not recompiling logic. ✅ This is the key operational lever.
 
 ### 3.2 Database connectors
-- Uniface talks to DBMSs through **connectors/drivers** (short codes, e.g. Oracle,
-  MS SQL Server, DB2, ODBC, and a bundled file/SQLite-class DB). ✅ concept;
-  ⚠️ `[verify the exact driver code strings available in 10.4 CE — CE is limited]`
+- Uniface talks to DBMSs through **connectors/drivers** named by short codes. In
+  this **Community Edition** install, the only DBMS connector shipped is **`SLE`
+  (SQLite)** — DLLs `usle10.dll` / `usle20.dll` — alongside the built-in file
+  drivers `SEQ`/`TXT`. ✅ *Verified: no Oracle/MSSQL/DB2 driver DLLs are present.*
+- **`PGS` (PostgreSQL)** appears only as a **commented example** in `dbms.asn`;
+  enterprise DBMS connectors are a full-product feature, not bundled with CE. ✅
 - The connector + connection string + credentials live in the assignment, so the
   same compiled app retargets a different database by assignment alone. ✅
 
 ### 3.3 N-tier topology (Router / Server)
-For client/server and 3-tier deployments, Uniface uses middleware processes: ✅
-- **Uniface Router (`urouter`)** — listens on a network port and brokers client
-  requests to server processes. ✅
-- **Uniface Server (`userver`)** — executes Uniface services/components on the
-  server tier. ✅
-- Connection topology is configured via assignment + a network configuration
-  (historically a `polyserver`/`.tcp`-style config). ⚠️ `[verify exact 10.4
-  config filenames]`
+For client/server and 3-tier deployments, Uniface uses middleware processes
+(executables in `common\bin`): ✅
+- **Uniface Router — `urouter.exe`** — listens on a TCP port and brokers client
+  requests to server processes. CE default **`localhost:13001`**. ✅
+- **Uniface Server — `userver.exe`** — executes services/components on the server
+  tier (its assignment is `userver.asn`). ✅
+- **Router Monitor — `urmon.exe`** — the *Router Monitor* admin tool. ✅
+- **Debug Server — `udbg.exe`** — CE default **`localhost:13002`**. ✅
+- Topology/ports live in `usys.ini [install]` (`urouter_port`, `udbg_port`,
+  `tomcat_port`) and connection/TLS in the assignment's **`[NET_SETTINGS]`**. ✅
+  *Verified — no separate `polyserver.tcp` file in 10.4 CE.*
 - Services can run **in-process** (same runtime) or **remote** (via the Router),
   controlled by assignment/service routing. ✅
 
@@ -223,19 +270,29 @@ For client/server and 3-tier deployments, Uniface uses middleware processes: ✅
 
 ---
 
-## 5. What to verify / correct next (handoff to the veteran)
+## 5. Verification status
 
-These are the specific points I flagged `[verify]` and would value your
-correction on, so this doc can graduate from draft to authoritative:
-1. Exact 10.4 IDE object/editor names and the Workspace definition (§1).
-2. The current deploy/export feature name and steps (§2.3).
-3. Default compiled-object storage and recommended packaging path (§2.2).
-4. Exact assignment section headers and DB-mapping syntax in 10.4 (§3.1).
-5. Available driver codes and connector limits under Community Edition (§3.2).
-6. 10.4 Router/Server network config filenames and license artifact form (§3.3–§2.4).
+Resolved by inspecting the live 10.4.03 CE install on 2026-06-27 (assignment
+files in `uniface\adm` / `common\adm`, `usys.ini`, and `common\bin`):
 
-> Once you mark these up, I'll fold your corrections back in and drop the
-> `[verify]` tags on the confirmed items.
+- ✅ **§1** IDE object types & editors — confirmed from `ide.asn` palette config.
+- ✅ **§2.2** Compiled-object storage & packaging — `$RESOURCES_OUTPUT` + **UAR** files.
+- ✅ **§2.4** License form — CE uses **cloud licensing** (`ulic.exe`); FlexLM
+  `lservrc` is the file-based alternative.
+- ✅ **§3.1** Assignment section headers & **DB-mapping syntax** — from `dbms.asn`.
+- ✅ **§3.2** Connectors / CE limits — **SQLite (`SLE`) only**; no enterprise DBMS.
+- ✅ **§3.3** Router/Server — `urouter.exe`@13001, `userver.exe`, `urmon.exe`,
+  `udbg.exe`@13002; ports in `usys.ini [install]`.
+
+Still open (need the IDE UI or veteran confirmation, not derivable from files):
+1. ⚠️ The precise **in-IDE "Workspace"** definition vs. the project directory (§1.1).
+2. ⚠️ The **deploy/export feature** name and click-path in the 10.4 IDE (§2.3).
+3. ⚠️ Exact meaning of the **ESV/SSV** component types (§1.2).
+4. ⚠️ Exact 10.4 source **export format/command** for VCS (§1.4).
+5. ⚠️ Exact 10.4 **ProcScript status-variable** set (`$status`/`$procerror`…) (§3.4).
+
+> The remaining items are UI/behavioral, not file-derivable — mark them up and
+> I'll fold them in.
 
 ---
 
