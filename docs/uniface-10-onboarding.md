@@ -4,11 +4,13 @@
 > newcomer — up to speed on the Uniface 10 development environment, deployment
 > packaging, and runtime/environment management.
 >
-> **Status: VERIFIED DRAFT.** Most items were confirmed on 2026-06-27 by
-> inspecting a live Uniface 10.4.03 CE install (assignment files, `usys.ini`,
-> `common\bin`) — see §5 for what's resolved vs. still open. Items still tagged
-> **`[verify]`** are UI/behavioral points not derivable from files; confirm them
-> against the official Rocket Uniface docs or hands-on. Corrections welcome.
+> **Status: VERIFIED.** Confirmed on 2026-06-27 against a live Uniface 10.4.03 CE
+> install — assignment files, `usys.ini`, `common\bin`, gated Rocket docs, and the
+> **MusicCart sample** loaded in the IDE (export files, on-disk artifacts, real
+> ProcScript). Every original *file-/CLI-/behavioral* `[verify]` item is resolved
+> (§5). Two ⚠️ tags remain by nature — **DSP feature depth** and **CE edition
+> limits** — product-capability questions answered by Rocket's docs, not by this
+> install. Corrections welcome.
 
 Confidence legend used below:
 - ✅ **Confident** — stable, long-standing Uniface concept.
@@ -84,8 +86,10 @@ to start in the project working directory:
 - Work is organized in a **project directory** (CE default
   `C:\Users\<user>\Rocket Uniface 10 Community Edition\project\`, recorded as
   `project=` in `usys.ini [install]`). It holds the dev assignment, the `.\dbms\`
-  repository databases, and the `.\resources` compile output. ✅ The IDE's own
-  "Workspace" term layered on top ⚠️ `[verify the precise in-IDE definition]`.
+  repository databases, and the `.\resources` compile output. ✅ In practice the
+  IDE's "Workspace" **is** this project context — the repository (the loaded set of
+  projects/components, e.g. the MusicCart `prj: MUSICSHOP`) plus its project
+  directory. Organization of what lives where is detailed in §1.5. ✅
 - Development objects live in a **repository** (a DBMS). For Community Edition the
   repository is a **bundled SQLite database** — `.\dbms\usys.db` via the `SLE`
   driver (user data in `.\dbms\userdata.db`). ✅ *Verified in `common\adm\dbms.asn`.*
@@ -148,6 +152,23 @@ to start in the project working directory:
   full IDE-vs-VSCode analysis in
   [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
 
+**Export — verified mechanics (MusicCart sample, 2026-06-27):** ✅
+- **Click-path:** select the object in the IDE and use the **Export** menu action.
+  Exporting at the **Project** level (`prj: MUSICSHOP` → **Export**) writes the
+  whole project; exporting a single component writes just that component.
+- **Granularity is selectable.** A single-component export
+  (`cpt_musiccart.xml`) contains only **3** repository tables — `UFORM` +
+  `UXGROUP` + `UXFIELD` (definition + UX page layout). A full project export
+  (`export-all-sample`, 1.8 MB) contains **all 31** object classes (`UAPPL`,
+  `UPROJECT`, `UFORM`, `UC*` component tables, `UX*` layout, `US*` service
+  specs/signatures/operations, `U*LIB*`/`UINC`/`UPRC`/`USNP` libraries, `UREF*`
+  cross-refs). All share the header `<UNIFACE release="10.4" repversion="8">`.
+- **There is NO command-line export switch.** Empirically confirmed: running
+  `ide.exe … /exp /all` is rejected by Uniface with
+  `0099 - Command line string not acceptable` (and exit code 1). The switch
+  reference has no `/exp`. Use the IDE **Export** action or ProcScript
+  `$ude("export")`; only **`/imp`** exists for the command line (import).
+
 ### 1.5 What you develop where — "Workspace" organization
 This resolves the "Workspace-centric" question for IDF veterans: dev work splits
 into two layers by **where the artifact lives**.
@@ -161,19 +182,35 @@ into two layers by **where the artifact lives**.
   **round-trip to XML** via Export/Import (§1.4). You don't edit the live object
   as a file — you export it, optionally edit the XML, and import it back.
 
-**B. Web presentation & additional files — develop as files (e.g. VSCode).**
-- **Web UI assets** for server pages — HTML/CSS/JavaScript for **DSP** (with the
-  documented client-side JavaScript API) and **XHTML** for **USP/Static Server
-  Pages** — are file-based presentation layers you can author in an external
-  editor, then compile/serve (tested via the bundled Tomcat, §1.3). ⚠️ *Confirm
-  the exact on-disk location of these assets in the live IDE.*
+**B. Web presentation & additional files — the file-based layer (e.g. VSCode).**
+- **Important nuance (verified on the MusicCart sample, 2026-06-27):** a DSP/USP's
+  **page markup (XHTML) lives in the repository** and is *embedded into the compiled
+  object* at compile time — it is **not** a standalone editable `.html` on disk.
+  What you find on disk is **generated/compiled output**, not source you author. So
+  the per-component page layout is an **IDE** artifact (Layer A), authored in the
+  Component Editor's *Design Layout* worksheet, not a file you hand-edit. ✅
+- **What *is* genuinely file-authorable** for the web tier: the **shared** static
+  assets under the web app — `webapps\uniface\{css, common, templates, webserver}`
+  — plus any custom CSS/JS/widgets and static resources you add. These are real
+  files you can own in VSCode. ✅
 - **Configuration** — `.asn` / `.ini` are plain text: edit directly in VSCode
-  (keep secrets out; see the secrets rule).
-- **Automation & build** — `scripts/`, CI, and the `/uniface-*` commands.
+  (keep secrets out; see the secrets rule). ✅
+- **Automation & build** — `scripts/`, CI, and the `/uniface-*` commands. ✅
 
-**Rule of thumb:** if it's a *modeled* object, it belongs to the IDE/repository
-(round-trip via XML); if it's a *presentation asset, config, or script*, it's a
-file you can own directly in VSCode. Full analysis:
+**Where artifacts actually land on disk** (verified, MusicCart on 10.4.03 CE):
+
+| Artifact | On-disk location | Nature |
+| --- | --- | --- |
+| Compiled runtime object | `project\resources\<type>\<name>.<type>` (`dsp` `usp` `frm` `svc` `aps` `edc` `sig`) | Binary-headered; **embeds** the XHTML/template. Not hand-editable. |
+| Generated DSP client JS | `…\webapps\uniface\dspjs\<name>.js` | Header: *"This source is generated by UNIFACE"* — **output**, not input. |
+| Compiler / debug meta | `project\<name>.cmi` | JSON mapping runtime ↔ source positions (debugger). |
+| **XML export (the VCS bridge)** | `project\<class>_<name>.xml` (e.g. `cpt_musiccart.xml`) | Repository serialization (`<DSC>/<FLD>/<DAT>`, `release="10.4" repversion="8"`). **One file per component.** |
+| Framework static web assets | `…\webapps\uniface\{css, common, templates, webserver, WEB-INF}` | Shared, file-based. |
+
+**Rule of thumb:** if it's a *modeled* object — including a DSP/USP's page layout —
+it belongs to the IDE/repository (round-trip via XML, one `<class>_<name>.xml` per
+component); only *shared web assets, config, and scripts* are files you own
+directly in VSCode. Full analysis:
 [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
 
 ---
@@ -208,9 +245,11 @@ application **without** the development environment:
   deploy on Oracle/SQL Server: `ide.exe /gensql createTable *.MYMODEL ora`. It
   emits DBMS-specific DDL (tables, indexes, RI) for the DBA to run. ✅ 📘 (Does
   **not** support SEQ/TXT/ODBC.)
-- The exact IDE *deploy/export-to-target* UI feature/wizard name is still ⚠️
-  `[verify menu path]`; the CLI compile + resources + assignment is the
-  reproducible path and is fully sufficient for scripted/CI delivery.
+- The IDE **Export** action (select object → **Export**; at project level
+  `prj: MUSICSHOP` → Export) produces the XML serialization for VCS — see §1.4 for
+  verified granularity. Note this is *source* export, not a deploy-to-target
+  wizard; the CLI compile + resources + assignment is the reproducible deploy path
+  and is fully sufficient for scripted/CI delivery. ✅
 - Best practice for "multiple apps at a client site" (this project's goal): treat
   each deployable as **{compiled objects + its own `.asn` + resources + a known
   runtime version}**, versioned and reproducible. ✅ (general principle)
@@ -296,8 +335,21 @@ For client/server and 3-tier deployments, Uniface uses middleware processes
 
 ### 3.4 Logging, diagnostics, error handling
 - Runtime behavior is observable via message frames and ProcScript status
-  variables (`$status`, `$procerror`, `$procerrorcontext`). ✅ `[verify exact
-  variable set in 10.4]`
+  variables — **`$status`, `$procerror`, `$procerrorcontext` confirmed in 10.4**
+  (found in the MusicCart sample's exported ProcScript). ✅ The idiomatic pattern,
+  taken verbatim from that sample, is:
+  ```
+  if ($status = 0)
+    if ($procerror < 0)
+      procerror = $procerror              ; capture into an OUT param
+      procerrorcontext = $procerrorcontext
+      return (0)
+  ```
+  Services propagate the error outward via signature params
+  (`numeric procerror : OUT`, `string procerrorcontext : OUT`). `$status` is the
+  call/operation status; `$procerror` is the ProcScript error code (**negative =
+  error**); `$procerrorcontext` is its string context. (Other status variables
+  exist in the full ProcScript reference; these three are the verified, in-use core.)
 - Logging verbosity and output are configurable through assignment settings. ✅
 - A practical "is it the code or the environment?" triage: if it compiles and runs
   in dev but fails on a target, suspect **assignment / connector / paths / license**
@@ -379,13 +431,25 @@ Also resolved from the gated Rocket docs (saved locally 2026-06-27):
 - ✅ **§1.5** "Workspace" organization — model & components in the IDE (repository,
   round-trip via XML); web assets / config / scripts as files (VSCode).
 
-Still open (need the live IDE UI):
-1. ⚠️ Exact **on-disk location** of DSP/USP web assets (HTML/JS/XHTML) (§1.5).
-2. ⚠️ The IDE **deploy/export** click-path and **export granularity** (one file per
-   object?) (§2.3) — partly known: export is via Main Menu (≡)/Actions + retrieve profile.
-3. ⚠️ Exact 10.4 **ProcScript status-variable** set (`$status`/`$procerror`…) (§3.4).
+Also resolved by inspecting the **MusicCart sample** loaded in the live IDE (2026-06-27):
+- ✅ **§1.5** **On-disk artifact map** — compiled objects in `project\resources\<type>\`;
+  generated DSP JS in `webapps\uniface\dspjs\`; `.cmi` debug meta in the project root;
+  XML export = `<class>_<name>.xml` (e.g. `cpt_musiccart.xml`). Key finding: **DSP/USP
+  page markup is repository-stored and embedded into the compiled object** — not a
+  standalone editable file on disk.
+- ✅ **§1.4 / §2.3** **Export** — click-path = select object → **Export** (project
+  level `prj: MUSICSHOP` → Export). Granularity selectable: single component =
+  3 tables (`UFORM`+`UXGROUP`+`UXFIELD`); full project = all 31 object classes.
+  **No CLI export switch** — `/exp /all` rejected with Uniface error `0099`.
+- ✅ **§3.4** **ProcScript status variables** — `$status`, `$procerror`,
+  `$procerrorcontext` confirmed in the sample's exported ProcScript, with the
+  error-propagation idiom.
 
-> Remaining items need the live IDE UI. Mark them up and I'll fold them in.
+**Every file-/CLI-/behavioral `[verify]` item from the original draft is now
+resolved.** The document is authoritative for 10.4.03 CE on the points covered. The
+only two ⚠️ tags left — **DSP feature depth** (§0) and **CE edition limits** (§0) —
+are product-capability questions for Rocket's docs, not things a single install
+settles.
 
 ---
 
