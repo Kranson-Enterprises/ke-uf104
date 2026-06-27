@@ -24,6 +24,7 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 | `/uniface-gensql` | Generate target-DBMS DDL (`/genSql`) for deployment. |
 | `/uniface-asn-review` | Review an `.asn` against the dev→prod checklist. |
 | `/uniface-cli` | Print the verified CLI cheat-sheet (no execution). |
+| `/uniface-dsp-review` | Review or scaffold DSP client JS + layout against the verified API. |
 | `/worklog-new` | Create the next sequential `worklog/00X` entry. |
 
 **Note:** the compile/import/gensql commands run `ide.exe` against the

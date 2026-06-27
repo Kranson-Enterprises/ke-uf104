@@ -8,9 +8,12 @@
 > install — assignment files, `usys.ini`, `common\bin`, gated Rocket docs, and the
 > **MusicCart sample** loaded in the IDE (export files, on-disk artifacts, real
 > ProcScript). Every original *file-/CLI-/behavioral* `[verify]` item is resolved
-> (§5). Two ⚠️ tags remain by nature — **DSP feature depth** and **CE edition
-> limits** — product-capability questions answered by Rocket's docs, not by this
-> install. Corrections welcome.
+> (§5). **DSP capabilities are now documented** from Rocket's own docs (§1.6,
+> web-researched 2026-06-27). Two narrow ⚠️ items remain, both gated behind
+> Rocket's login-only **Platform Availability Matrix** — the **exact
+> supported-browser matrix / ES floor** for DSP (§1.6) and the **CE edition
+> connector limits** (§0) — not answerable from this install or open docs.
+> Corrections welcome.
 
 Confidence legend used below:
 - ✅ **Confident** — stable, long-standing Uniface concept.
@@ -43,7 +46,12 @@ What's genuinely new or reworked:
   artifacts are developed **as files** (e.g. in VSCode). See §1.5. ✅
 - A cleaner separation between **development repository** and **deployment**. ✅
 - Stronger emphasis on **web components (Dynamic Server Pages / DSP)** with a
-  documented JavaScript/browser API. ⚠️ `[verify exact DSP capabilities in 10.4]`
+  documented JavaScript/browser API and HTML5 rendering. ✅ Architecture, the JS
+  API surface, the HTML5 authoring model, and the ECMAScript baseline are now
+  documented in **§1.6** (web-researched against Rocket docs, 2026-06-27). One
+  narrow item stays ⚠️: the *exact supported-browser matrix and any written ES
+  floor* live in Rocket's login-gated **Platform Availability Matrix (PAM)** and
+  could not be read from open sources — see §1.6.
 - Editions including **Community Edition** (what this project uses: 10.4.03 CE),
   which is feature/connector-limited vs. the full product. ⚠️ `[verify CE limits]`
 
@@ -212,6 +220,102 @@ it belongs to the IDE/repository (round-trip via XML, one `<class>_<name>.xml` p
 component); only *shared web assets, config, and scripts* are files you own
 directly in VSCode. Full analysis:
 [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
+
+### 1.6 DSP web components — architecture & capabilities
+*Web-researched against Rocket Uniface docs on 2026-06-27; see
+[worklog/009](../worklog/009-dsp-capabilities-web-research.md) for full sources.
+Markers: ✅ = documented on a Rocket page; 🔸 = inferred (logical, not stated
+verbatim); ⚠️ = could not verify (gated PAM).*
+
+**A. What a DSP is — a split, two-part component.** ✅
+- A DSP runs in **two halves**: a **non-persistent server part** (Uniface Server,
+  re-instantiated per request) and a **persistent client part** that lives in the
+  browser until the page closes. They communicate **asynchronously over HTTP**,
+  exchanging **JSON** streams; a **JavaScript runtime engine in the browser** maps
+  client ↔ server. This is the core difference from a **USP/Static Server Page**,
+  which regenerates the *whole* page each round-trip. DSP = partial/incremental
+  **and** full-page updates; USP = full-page only.
+- Server-side logic is **ProcScript** (`trigger`/`operation`); client-side logic
+  is **JavaScript** (`webtrigger`/`weboperation`, declared in ProcScript but coded
+  in `javascript … endjavascript`). State (component/instance/scope) round-trips on
+  every request so the server can recreate its non-persistent half.
+
+**B. The client-side JavaScript API.** ✅ Uniface exposes a global **`uniface`**
+object and a data-addressing tree:
+`uniface` → `getInstance()` → `getEntity()` → `getOccurrence(s)()` →
+`getField(s)()`, then on a field **`getValue()` / `setValue()`** and
+**`getProperty()` / `setProperty()` / `setProperties()`**.
+- **Crossing the boundary:** client → server is **`uniface.activate()`** /
+  **`uniface.createInstance()`** (async, **return Promises** — since Uniface 9.7);
+  server → client is the ProcScript **`webactivate`** statement (queues a client
+  `weboperation`). *(There is no `callServer`/`getFieldValue`/`setFieldValue` —
+  those names are from other frameworks, not Uniface 10.)* 🔸
+- **In the browser, all field values are strings** regardless of the modeled data
+  type; the API does no formatting/conversion. ✅
+
+**C. HTML5 authoring model.** ✅
+- **By default Uniface maps fields to native HTML5 elements** ("you can switch this
+  to use JavaScript-based web widgets"). DSPs emit **standards-compliant XHTML**
+  (each bound element carries an `id`, e.g. `id="ufld:FLD.ENTITY.COMP"`) — unlike
+  USP, which emits proprietary `<x-entity>`/`<x-occurrence>` tags.
+- The page is authored in the Component Editor's **Design Layout** worksheet
+  (repository-stored, compiled into the object — see §1.5). You can **freely embed
+  your own HTML5 / CSS / `<script>`**, control JS/CSS load order, add custom
+  `html:`-prefixed attributes (Uniface passes them through unvalidated), apply
+  static (`html:class`) or dynamic (`class:Name`) CSS hooks, and even emit an
+  **external `.hts` layout** (compile sub-switch `/ext`) to maintain markup in a
+  third-party tool. Default stylesheet: `uniface.css`.
+- **Widgets:** a set of **physical** widgets (generate the actual HTML control) and
+  more **logical** widgets mapping onto them — EditBox, TextArea, CommandButton
+  (+`_updatable`), CheckBox, DropDownList, ListBox, DatePicker, RadioGroup, Picture,
+  **DspContainer** (nest a child DSP), RawHTML, etc. In 10.4 several are HTML5
+  controls rather than the older Dojo widgets.
+- **Responsive/mobile:** the mobile story is "responsive web app first" via a
+  **Mobile App Layout** framework; the official `sample-web` repo uses Bootstrap +
+  third-party JS libs. Uniface does **not** auto-emit CSS media queries — that's
+  developer/Bootstrap CSS. 🔸
+
+**D. Event / update model.** ✅ Web triggers include **`OnChange`** (fires on
+*interactive* change only — **not** when the JS API sets the value), **`OnFocus`**,
+**`OnClick`**. Updates are AJAX-style: the browser uses the DSP's **scope** to send
+only the relevant entity/occurrence/field JSON and to block the target elements
+being refreshed — this is the "only changed data is sent" behaviour. **JavaScript
+must be enabled** or DSPs do not function.
+
+**E. ECMAScript baseline & the CEF-vs-deployment distinction.** *This is the part
+the user asked to pin down — read the markers carefully.*
+- **Two different engines, do not conflate them:**
+  - The **Uniface IDE shell** (and the desktop `uhtml` HTML widget) embeds
+    **CEF / Chromium** — verified locally as **CEF 141.0.5 / Chromium
+    141.0.7390.55** on this 10.4.03 install (§1.1). Rocket's own patch notes confirm
+    CEF was stepped 81 → 123 → **141** (patch 10.4.03-028) → 148 (10.4.03-044). This
+    is **development-time only**. ✅
+  - A **deployed DSP runs in the end user's own standard browser**, reached through
+    Tomcat → Web Request Dispatcher (servlet) → urouter → userver. It **never runs
+    in CEF** on the user side. ✅
+- **Documented ECMAScript statements are thin.** The *only* explicit ES version in
+  the docs is **ECMAScript 2015 (ES6)**, cited solely as the spec basis for
+  Uniface **Promises** — not as a required level or a cap. No polyfill/transpile
+  guidance exists, and the `sample-web` repo ships none. ✅
+- Because the JS API returns **native `Promise`** objects (an ES2015 feature absent
+  from IE), **ES2015 is the de-facto floor** for DSP client code. 🔸 IE 8/9/10 were
+  publicly removed from DSP support ("below 0.1% of traffic"); the deployment target
+  is effectively **evergreen Chrome/Edge/Firefox/Safari**, which support ES2015
+  through recent yearly editions. 🔸 (Chromium 141 ⇒ full ES2015–ES2022+; that
+  Chromium→ES mapping is a general web-platform fact, not a Uniface claim.)
+- ⚠️ **What stays unverified:** the *authoritative supported-browser matrix with
+  version numbers*, and any *written ES floor / transpilation rule* for DSP code,
+  are in Rocket's **login-gated Platform Availability Matrix** (`my.rocketsoftware.com`,
+  community-referenced as PAM 10.4.03-028, 2025-11-05). Rocket publishes **no** open
+  page stating a required ECMAScript level for DSP customizations — so "modern JS
+  works on modern engines, but Rocket gives no written guarantee" is the honest
+  position. Download the PAM's *Web Browsers* rows to close this.
+
+**Bottom line for a v9 veteran:** a DSP is a thin-but-stateful HTML5 page driven by
+a real client-side JS API over async JSON; you author standards HTML5/CSS and can
+drop in your own JavaScript; target modern evergreen browsers; and the only ES
+level Rocket actually *commits to in writing* is ES2015-for-Promises — everything
+beyond that is "supported by the engine, not promised by the vendor."
 
 ---
 
@@ -445,11 +549,26 @@ Also resolved by inspecting the **MusicCart sample** loaded in the live IDE (202
   `$procerrorcontext` confirmed in the sample's exported ProcScript, with the
   error-propagation idiom.
 
+Also resolved by **web research against Rocket's docs** (2026-06-27,
+[worklog/009](../worklog/009-dsp-capabilities-web-research.md)):
+- ✅ **§1.6** **DSP capabilities** — split client/server architecture; the
+  `uniface` JS API surface (`getInstance`→`getEntity`→`getOccurrence`→`getField`,
+  `getValue`/`setValue`, `activate`/`createInstance` Promises, `webactivate`);
+  HTML5 authoring (native HTML5 mapping, standards XHTML, custom HTML/CSS/JS,
+  widget set, `class:` hooks, `/ext` external layouts); event/AJAX-scope model
+  (`OnChange`/`OnFocus`/`OnClick`); and the ECMAScript baseline (only ES2015 is
+  documented, for Promises; ES2015 is the de-facto floor; IDE CEF 141 ≠ the
+  end-user deployment browser).
+- ⚠️ **§1.6** remaining: the *exact supported-browser matrix / written ES floor*
+  for DSP is in Rocket's login-gated **Platform Availability Matrix** — not
+  readable from open docs.
+
 **Every file-/CLI-/behavioral `[verify]` item from the original draft is now
-resolved.** The document is authoritative for 10.4.03 CE on the points covered. The
-only two ⚠️ tags left — **DSP feature depth** (§0) and **CE edition limits** (§0) —
-are product-capability questions for Rocket's docs, not things a single install
-settles.
+resolved**, and **DSP capabilities are documented** (§1.6). The document is
+authoritative for 10.4.03 CE on the points covered. Two narrow ⚠️ items remain,
+both gated behind Rocket's login-only **Platform Availability Matrix** — the
+**DSP supported-browser matrix / ES floor** (§1.6) and the **CE edition connector
+limits** (§0).
 
 ---
 

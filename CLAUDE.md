@@ -41,6 +41,12 @@ every saved memory with a one-line hook. See
 - **Keep secrets & proprietary content out of git** — no credentials in `.asn`;
   Rocket docs stay in gitignored `webfetched/`; scan `git status`/`diff` before
   committing. [.claude/rules/protect-secrets-and-proprietary.md](.claude/rules/protect-secrets-and-proprietary.md).
+- **DSP web-component conventions** — the page layout is a repository object (never
+  hand-edit generated `.dsp`/`dspjs` output); use the real `uniface` JS API
+  (`getValue`/`setValue`, `activate`/`createInstance` Promises, `webactivate`);
+  `OnChange` fires on interactive change only; author HTML5 and target evergreen
+  browsers (ES2015 floor).
+  [.claude/rules/uniface-dsp-web-conventions.md](.claude/rules/uniface-dsp-web-conventions.md).
 
 ## Conventions
 
