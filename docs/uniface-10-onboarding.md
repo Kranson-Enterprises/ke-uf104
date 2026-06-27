@@ -35,8 +35,10 @@ What's genuinely new or reworked:
 - A rebuilt IDE whose **"modern UI" is an embedded Chromium browser (CEF)** — the
   UI is HTML/CSS/JavaScript rendered by Chromium Embedded Framework and driven by
   the native Uniface runtime, which is what makes it platform-portable. ✅
-  *Verified locally on 10.4.03 042 — see §1.1 Architecture.* The **Workspace**-
-  centric organization of dev work ⚠️ `[verify exact definition]`.
+  *Verified locally on 10.4.03 042 — see §1.1 Architecture.* Dev work is
+  organized around a **repository-backed project**: you develop the model and
+  components **in the IDE**, while web presentation assets and other file-based
+  artifacts are developed **as files** (e.g. in VSCode). See §1.5. ✅
 - A cleaner separation between **development repository** and **deployment**. ✅
 - Stronger emphasis on **web components (Dynamic Server Pages / DSP)** with a
   documented JavaScript/browser API. ⚠️ `[verify exact DSP capabilities in 10.4]`
@@ -145,6 +147,34 @@ to start in the project working directory:
   `components/` / `src/` and commit them as the VCS-visible serialization. See the
   full IDE-vs-VSCode analysis in
   [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
+
+### 1.5 What you develop where — "Workspace" organization
+This resolves the "Workspace-centric" question for IDF veterans: dev work splits
+into two layers by **where the artifact lives**.
+
+**A. The model & components — develop in the IDE (repository-backed).** ✅
+- The **Application Model** (entities, fields, keys, relationships, inheritance)
+  and **components** (FRM/RPT/SVC/DSP/USP/ESV/SSV) and their **ProcScript** are
+  stored in the repository and edited through the IDE's structured editors
+  (Component, Entity, Project, Library editors; U-Bar; Smart Resource Browsers).
+- The repository is the **source of truth**; for version control these objects
+  **round-trip to XML** via Export/Import (§1.4). You don't edit the live object
+  as a file — you export it, optionally edit the XML, and import it back.
+
+**B. Web presentation & additional files — develop as files (e.g. VSCode).**
+- **Web UI assets** for server pages — HTML/CSS/JavaScript for **DSP** (with the
+  documented client-side JavaScript API) and **XHTML** for **USP/Static Server
+  Pages** — are file-based presentation layers you can author in an external
+  editor, then compile/serve (tested via the bundled Tomcat, §1.3). ⚠️ *Confirm
+  the exact on-disk location of these assets in the live IDE.*
+- **Configuration** — `.asn` / `.ini` are plain text: edit directly in VSCode
+  (keep secrets out; see the secrets rule).
+- **Automation & build** — `scripts/`, CI, and the `/uniface-*` commands.
+
+**Rule of thumb:** if it's a *modeled* object, it belongs to the IDE/repository
+(round-trip via XML); if it's a *presentation asset, config, or script*, it's a
+file you can own directly in VSCode. Full analysis:
+[worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
 
 ---
 
@@ -346,9 +376,11 @@ Also resolved from the gated Rocket docs (saved locally 2026-06-27):
   `/cmi`, `/sym`), import (`/imp`, exit 0/1), DDL (`/genSql`), `?` dialog, repo-
   migration caveat, `urouter.asn [SERVERS]`.
 - ✅ **§2.3** Production build — `ide.exe /all /nodebug` → UAR; `/genSql` for target DDL.
+- ✅ **§1.5** "Workspace" organization — model & components in the IDE (repository,
+  round-trip via XML); web assets / config / scripts as files (VSCode).
 
-Still open (need the IDE UI or veteran confirmation):
-1. ⚠️ The precise **in-IDE "Workspace"** definition vs. the project directory (§1.1).
+Still open (need the live IDE UI):
+1. ⚠️ Exact **on-disk location** of DSP/USP web assets (HTML/JS/XHTML) (§1.5).
 2. ⚠️ The IDE **deploy/export** click-path and **export granularity** (one file per
    object?) (§2.3) — partly known: export is via Main Menu (≡)/Actions + retrieve profile.
 3. ⚠️ Exact 10.4 **ProcScript status-variable** set (`$status`/`$procerror`…) (§3.4).
