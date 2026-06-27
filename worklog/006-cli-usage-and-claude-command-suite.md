@@ -105,6 +105,15 @@ personal memories and the proprietary `webfetched/` docs stay gitignored.
 3. Exact 10.4 **ProcScript status-variable** set (`$status`/`$procerror`…).
 4. Where **DSP/SSP web assets** live on disk; whether `#file` disk includes work.
 
+> **Update (2026-06-27):** Items 1–3 and the on-disk-asset part of 4 are resolved
+> in [008](008-sample-driven-export-verification.md) and
+> [009](009-dsp-capabilities-web-research.md) (Workspace = project context; Export
+> granularity selectable; status vars `$status`/`$procerror`/`$procerrorcontext`;
+> DSP markup is repository-stored). Only the **`#file` disk-include** question
+> remains open. The command suite has since gained
+> **[/uniface-dsp-review](../.claude/commands/uniface-dsp-review.md)** (review/scaffold
+> DSP client JS + layout) — see [009](009-dsp-capabilities-web-research.md).
+
 ---
 
 ## References

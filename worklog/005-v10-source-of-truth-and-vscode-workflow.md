@@ -56,9 +56,20 @@ Uniface IDE plugin SDK extends the *IDE* (CEF), not VSCode
 | `.asn` / `.ini` / config (use `pathscrambler.exe` for credentials in `.asn`) | ✅ pure text |
 | Review / diff / merge **exported XML** in Git | ✅ |
 | ProcScript-heavy **library** objects (Global ProcScript, Include, Snippets) — export → edit text → import | ⚠️ practical; XML wrapper is awkward |
-| Static **DSP / USP web assets** (HTML / CSS / JS) | ⚠️ likely file-based; confirm location |
+| Static **DSP / USP web assets** (HTML / CSS / JS) | ⚠️ likely file-based; confirm location → **see correction below** |
 | **Compile / import / export automation** via CLI + `$ude("export"/"import")` | ✅ exists; ⚠️ exact switch letters |
 | Git, code review, build scripts, **CI/CD** producing **UAR** packages | ✅ fully external |
+
+> **Correction (2026-06-27, see [008](008-sample-driven-export-verification.md) /
+> [009](009-dsp-capabilities-web-research.md)):** the §3 guess that DSP/USP web
+> assets are "likely file-based" was **partly wrong**. A DSP/USP's **page markup
+> (XHTML) lives in the repository** (authored in the Component Editor's Design
+> Layout worksheet) and is *embedded into the compiled object* — it is **not** a
+> hand-editable `.html` on disk (what you see under `project\resources\` and
+> `webapps\uniface\dspjs\` is generated output). Only the **shared** web assets
+> (`webapps\uniface\{css,common,templates,...}`) plus your own custom CSS/JS are
+> genuinely file-authorable. So per-component layout is an IDE/repository object
+> (round-trip via XML), not a VSCode file.
 
 ---
 
@@ -165,6 +176,14 @@ import/export driven from the command line. That is the realistic
 
 > Saved source PDFs live in the gitignored `webfetched/` folder (Rocket
 > proprietary — not committed). See [[reference-rocket-docs-login]].
+
+> **Update (2026-06-27):** Of the four "Still open" items: (1) **export
+> granularity** is selectable — single component = 3 tables, full project = 31
+> classes ([008](008-sample-driven-export-verification.md)); (2) **DSP/SSP web
+> assets** — resolved (see the Correction above; markup is repository-stored);
+> (4) the IDE **Export** action click-path is confirmed in 008. Only (3) —
+> whether ProcScript libraries can be **`#file`-included from disk** vs. repository
+> `#include` — remains genuinely open.
 
 ---
 

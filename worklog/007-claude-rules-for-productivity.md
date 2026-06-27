@@ -58,6 +58,12 @@ cross-links the others plus the onboarding doc and worklogs.
   `protect-secrets-and-proprietary`).
 - Revisit the rule set after the remaining live-IDE `[verify]` items are resolved.
 
+> **Update (2026-06-27):** The rule-set revisit is done. With the `[verify]` items
+> resolved (008) and DSP capabilities researched (009), a fifth rule —
+> **`uniface-dsp-web-conventions`** — plus the **/uniface-dsp-review** command were
+> added and wired into CLAUDE.md / the commands README. The secrets-blocking hook
+> remains the one open "next" item.
+
 ## References
 - Rules: [../.claude/rules/](../.claude/rules/); wiring in
   [../CLAUDE.md](../CLAUDE.md). Related: [006](006-cli-usage-and-claude-command-suite.md),

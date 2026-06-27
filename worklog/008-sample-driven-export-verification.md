@@ -107,6 +107,12 @@ Services propagate the error outward via signature params
 Two ⚠️ tags remain by nature (DSP feature depth, CE edition limits) — product-
 capability questions for Rocket's docs, not answerable from one install.
 
+> **Update (2026-06-27):** **DSP feature depth is now researched and documented**
+> ([009](009-dsp-capabilities-web-research.md) / onboarding §1.6 — architecture, JS
+> API, HTML5 model, ECMAScript baseline). The only ⚠️ items left are **PAM-gated**
+> (login-only Platform Availability Matrix): the exact DSP supported-browser matrix
+> / ES floor, and the CE edition connector limits.
+
 ## References
 - [docs/uniface-10-onboarding.md](../docs/uniface-10-onboarding.md) §0/§1.1/§1.4/§1.5/§2.3/§3.4/§5.
 - Sample exports: `project\cpt_musiccart.xml`, `project\export-all-sample`.

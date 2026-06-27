@@ -144,6 +144,15 @@ Carried in the onboarding doc §5 and the project memory:
 
 Next probe: explore these in the running IDE (PID from session) or the Rocket docs.
 
+> **Update (2026-06-27):** All six open items are resolved, and the §2 glossary's
+> `ESV/SSV meaning ⚠️` is now confirmed: **ESV = Entity Service, SSV = Session
+> Service** ([006](006-cli-usage-and-claude-command-suite.md)). Workspace
+> definition, the IDE **Export** action + export format/granularity, and the
+> ProcScript status variables (`$status`/`$procerror`/`$procerrorcontext`) are in
+> [008](008-sample-driven-export-verification.md). DSP capabilities — including
+> where web assets actually live — are in
+> [009](009-dsp-capabilities-web-research.md) / onboarding §1.6.
+
 ---
 
 ## References

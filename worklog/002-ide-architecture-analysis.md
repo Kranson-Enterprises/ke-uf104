@@ -77,3 +77,13 @@ place and aborted.
   IDE's DOM/JS layer directly.
 - Still open from onboarding §5: exact Workspace definition, deploy/export steps,
   `.asn` section syntax, CE connector limits.
+
+> **Update (2026-06-27):** All four follow-ups are now resolved — Workspace
+> definition + on-disk artifacts in [008](008-sample-driven-export-verification.md)
+> and onboarding §1.5; deploy/**Export** in 008; `.asn` syntax in
+> [004](004-ide-environment-definitions-and-asn-guidance.md); CE connector limits in
+> 004 §4. **CEF version history (new knowledge):** this install (10.4.03 042) ships
+> **CEF 141 / Chromium 141**; Rocket stepped CEF 81 → 123 → 141 (patch 10.4.03-028)
+> → **148** (patch 10.4.03-044). Crucially, that CEF is the **IDE shell only** — a
+> deployed DSP runs in the end user's own browser, not CEF. See
+> [009](009-dsp-capabilities-web-research.md).
