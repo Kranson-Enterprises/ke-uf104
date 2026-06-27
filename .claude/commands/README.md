@@ -16,7 +16,7 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 
 | Command | What it does |
 | --- | --- |
-| `/build` | Run the batch build (`setup-env.bat` + `build.bat`). |
+| `/build` | Build via the batch scripts (`ide.exe /all /nodebug` → UAR). |
 | `/uniface-launch-ide` | Launch the IDE with correctly quoted `/adm` + project workdir. |
 | `/uniface-compile` | CLI compile (`/all /nodebug` by default; targeted via args). |
 | `/uniface-import` | Import XML definitions (`/imp`) with exit-code check. |
