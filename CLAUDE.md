@@ -26,6 +26,12 @@ read [.claude/memory/INDEX.md](.claude/memory/INDEX.md) if it exists — it list
 every saved memory with a one-line hook. See
 [.claude/memory/README.md](.claude/memory/README.md) for the format.
 
+## Rules (always apply)
+
+- **Quote paths that contain spaces** in every shell command, argument, script,
+  and doc example. The Uniface install path has spaces, so this is mandatory.
+  Full rule: [.claude/rules/quote-paths-with-spaces.md](.claude/rules/quote-paths-with-spaces.md).
+
 ## Conventions
 
 - Reference files as clickable links, e.g. [build.bat](scripts/build.bat).
