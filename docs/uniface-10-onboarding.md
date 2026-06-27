@@ -96,10 +96,13 @@ to start in the project working directory:
   - **FRM** — Form (interactive UI).
   - **RPT** — Report (output/printing).
   - **SVC** — Service (non-UI, operation-based; in-process or remote).
-  - **DSP** — Dynamic Server Page (web UI served to a browser).
-  - **USP** — (Uniface) Server Page (the other web component type).
-  - **ESV / SSV** — additional web/service component types present in 10.4. ⚠️
-    `[verify exact meaning of ESV/SSV]`
+  - **DSP** — Dynamic Server Page (web UI served to a browser). ✅
+  - **USP** — (Uniface) **Static Server Page** — the other web component family
+    (the Reference lists "Widget Reference: Static Server Pages" + "XHTML Elements
+    for Static Server Pages"). ✅
+  - **ESV** — Entity Service; **SSV** — Session Service. ✅ *Confirmed via the
+    `/esv` / `/ssv` compile switches.*
+  - **CPT** — generic "all components" (compiling `/cpt` = DSP+USP+FRM+RPT+SVC+ESV+SSV). ✅
 - **ProcScript** in **triggers** and **operations**, with **signatures** defining
   callable interfaces (params: IN/OUT/INOUT). ✅
 - **Global / library objects** (each has its own editor — see §1.3): Include
@@ -123,13 +126,25 @@ to start in the project working directory:
   (trigger/operation migration, inheritance handling). ✅ *Seen in `ide.asn`
   `[LOGICALS]`.* (Note: relevant for v5–8 veterans only after a v9 step.)
 
-### 1.4 Source management
-- Uniface supports **exporting development objects to text** (importable/exportable
-  source) so they can live in version control rather than only inside the
-  repository DB. ✅ concept; ⚠️ `[verify the exact 10.4 export format/command and
-  whether it's per-object or workspace-level]`
-- For this repo, that's the bridge between the Uniface repository and Git:
-  export sources into `src/` / `components/` and commit the text artifacts.
+### 1.4 Source management — the repository is the source of truth
+- **Development objects live in the repository DB, not in files.** A single
+  object's definition may be spread over several repository entities, so you can't
+  hand-edit it — Uniface provides an **Export/Import facility** (with corruption
+  safeguards) as the bridge to the filesystem and version control. ✅ 📘
+- **Export/import is to XML** (well-formed, RI-aware, nested by aggregation; schema
+  = "Uniface XML Constructs"). Three access methods: ✅ 📘
+  - IDE **Main Menu (≡) / Actions** → Export/Import, selecting objects with a
+    **retrieve profile**;
+  - ProcScript **`$ude("export")` / `$ude("import")`** (XML, optionally zipped);
+  - command line **`/imp`** (import). *No documented command-line export switch —
+    script export via `$ude("export")` or the IDE.*
+- **Import auto-migrates** compatible data and rejects incompatible/copy-created
+  data. Note: the separate **Data Copy** facility (`/cpy`, `$ude("copy")`) is
+  **not** import-compatible — use export/import for VCS, not copy. ✅ 📘
+- For this repo, that's the Uniface↔Git bridge: export objects as XML into
+  `components/` / `src/` and commit them as the VCS-visible serialization. See the
+  full IDE-vs-VSCode analysis in
+  [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
 
 ---
 
@@ -156,9 +171,16 @@ application **without** the development environment:
   resources/UARs, distinct from the development project. ✅
 
 ### 2.3 Producing a package
-- The IDE provides a way to **export/deploy** a compiled application set for
-  delivery to a target. ⚠️ `[verify the exact 10.4 deploy/export feature name and
-  steps — I don't want to invent menu paths]`
+- **Compile for production** from the command line: `ide.exe /all /nodebug`
+  (`/nodebug` makes shells/components/global ProcScript non-debuggable — the
+  production setting). Output lands in `$RESOURCES_OUTPUT`, packaged as **UAR**. ✅
+- **Generate the target-DBMS schema** with `/genSql` — e.g. develop on SQLite,
+  deploy on Oracle/SQL Server: `ide.exe /gensql createTable *.MYMODEL ora`. It
+  emits DBMS-specific DDL (tables, indexes, RI) for the DBA to run. ✅ 📘 (Does
+  **not** support SEQ/TXT/ODBC.)
+- The exact IDE *deploy/export-to-target* UI feature/wizard name is still ⚠️
+  `[verify menu path]`; the CLI compile + resources + assignment is the
+  reproducible path and is fully sufficient for scripted/CI delivery.
 - Best practice for "multiple apps at a client site" (this project's goal): treat
   each deployable as **{compiled objects + its own `.asn` + resources + a known
   runtime version}**, versioned and reproducible. ✅ (general principle)
@@ -251,6 +273,35 @@ For client/server and 3-tier deployments, Uniface uses middleware processes
   in dev but fails on a target, suspect **assignment / connector / paths / license**
   before suspecting logic. ✅ (best-practice heuristic)
 
+### 3.5 Command-line interface (compile / import / DDL) — verified
+Run a Uniface executable (`ide`, `uniface`, `urouter`, `userver`, `udbg`) with
+switches: `Executable {Switch {SubSwitches}}… {AppShell} {Parameters}`. ✅ 📘
+This is the basis for CI/CD. Key switches (all "Use with `ide.exe`"):
+
+| Switch | Purpose |
+| --- | --- |
+| `/all [Profile]` | Compile **all** main objects (= `/obj /sig /dsp /usp /frm /rpt /svc /esv /ssv /ceo /app /dtd`). |
+| `/cpt` | Compile all **components** (= `/dsp /usp /frm /rpt /svc /esv /ssv`). |
+| `/frm` `/rpt` `/svc` `/dsp` `/usp` `/esv` `/ssv` | Compile that one component type (wildcards allowed, e.g. `/svc *VAL`). |
+| `/imp FileName` | **Import** XML Repository definitions. Exit code **0** success / **1** failure (scriptable). |
+| `/cpy Source Target` | **Data Copy** of entity *occurrences* — **NOT** for Repository definitions (corrupts the Repository; use `/imp` + export instead). |
+| `/genSql {/meta} createTable\|createScript entity.model DB [file]` | Generate **DBMS-specific DDL** (tables / RI) for a target connector (e.g. `mss`, `ora`). |
+
+Common compile sub-switches: `/cmi=0|1` (compiled-module info; default 1 in v10),
+`/sym=0..3` (symbol table / `UXCROSS` xref), **`/nodebug`** (non-debuggable —
+**use for production builds**), `/aft=`/`/bef=DateTime` (changed-since), `/inf`/`/war`/`/lis`
+(message verbosity), `/iap`/`/tpl`/`/plt` (purpose: include-all/templates/palettes).
+
+Notes (verified):
+- **No command-line *export* switch exists** — export Repository definitions via
+  the IDE or `$ude("export")`. (`/ex` is unrelated — "exclusive Uniface Server".)
+- **`ide.exe /all`** compiles everything; the trailing **`?`** opens the
+  command-line dialog box.
+- CLI execution **fails if the Repository has unmigrated/incompatible data** — run
+  an interactive IDE session first to migrate (important for CI). ⚠️ operational
+- Uniface Server processes are defined in **`urouter.asn` `[SERVERS]`**
+  (e.g. `wasv = "…userver.exe" /dir=… /adm=… /asn=wasv.asn`). ✅
+
 ---
 
 ## 4. Productivity tips (AI tooling + human operator)
@@ -277,22 +328,32 @@ files in `uniface\adm` / `common\adm`, `usys.ini`, and `common\bin`):
 
 - ✅ **§1** IDE object types & editors — confirmed from `ide.asn` palette config.
 - ✅ **§2.2** Compiled-object storage & packaging — `$RESOURCES_OUTPUT` + **UAR** files.
-- ✅ **§2.4** License form — CE uses **cloud licensing** (`ulic.exe`); FlexLM
-  `lservrc` is the file-based alternative.
+- ✅ **§2.4** License form — CE uses **cloud licensing** (`ulic.exe`, Sentinel);
+  a `lservrc` file is the file-based alternative.
 - ✅ **§3.1** Assignment section headers & **DB-mapping syntax** — from `dbms.asn`.
 - ✅ **§3.2** Connectors / CE limits — **SQLite (`SLE`) only**; no enterprise DBMS.
 - ✅ **§3.3** Router/Server — `urouter.exe`@13001, `userver.exe`, `urmon.exe`,
   `udbg.exe`@13002; ports in `usys.ini [install]`.
 
-Still open (need the IDE UI or veteran confirmation, not derivable from files):
-1. ⚠️ The precise **in-IDE "Workspace"** definition vs. the project directory (§1.1).
-2. ⚠️ The **deploy/export feature** name and click-path in the 10.4 IDE (§2.3).
-3. ⚠️ Exact meaning of the **ESV/SSV** component types (§1.2).
-4. ⚠️ Exact 10.4 source **export format/command** for VCS (§1.4).
-5. ⚠️ Exact 10.4 **ProcScript status-variable** set (`$status`/`$procerror`…) (§3.4).
+Also resolved from the gated Rocket docs (saved locally 2026-06-27):
+- ✅ **§1.4** Source management — XML **Export/Import** facility (IDE Main Menu/
+  Actions, `$ude("export"/"import")`, command-line `/imp`); repository is the
+  source of truth; Data Copy (`/cpy`) is separate and **must not** be used for
+  definitions. **No command-line export switch exists.**
+- ✅ **§1.2** Component types — DSP (Dynamic SP), USP (Static SP), **ESV = Entity
+  Service**, **SSV = Session Service**, FRM/RPT/SVC, CPT = all components.
+- ✅ **§3.5** Command-line interface — compile (`/all`, `/cpt`, per-type, `/nodebug`,
+  `/cmi`, `/sym`), import (`/imp`, exit 0/1), DDL (`/genSql`), `?` dialog, repo-
+  migration caveat, `urouter.asn [SERVERS]`.
+- ✅ **§2.3** Production build — `ide.exe /all /nodebug` → UAR; `/genSql` for target DDL.
 
-> The remaining items are UI/behavioral, not file-derivable — mark them up and
-> I'll fold them in.
+Still open (need the IDE UI or veteran confirmation):
+1. ⚠️ The precise **in-IDE "Workspace"** definition vs. the project directory (§1.1).
+2. ⚠️ The IDE **deploy/export** click-path and **export granularity** (one file per
+   object?) (§2.3) — partly known: export is via Main Menu (≡)/Actions + retrieve profile.
+3. ⚠️ Exact 10.4 **ProcScript status-variable** set (`$status`/`$procerror`…) (§3.4).
+
+> Remaining items need the live IDE UI. Mark them up and I'll fold them in.
 
 ---
 
