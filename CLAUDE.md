@@ -70,6 +70,12 @@ every saved memory with a one-line hook. See
   reserved words; ProcScript file names must be **cross-platform** for the Unix/Linux
   target. [.claude/rules/uniface-object-naming.md](.claude/rules/uniface-object-naming.md);
   validate with [/uniface-name-check](.claude/commands/uniface-name-check.md).
+- **PowerShell hook & script security** — target patched **PowerShell 7+** (the
+  [preflight](.claude/hooks/preflight-powershell.ps1) advises on version/updates); no
+  surprise network calls from auto-run hooks (network is opt-in, pinned, throttled,
+  fail-silent); never put secrets on the command line; treat hook stdin as untrusted
+  and never `iex` it; fail open for advisories, `exit 2` only for clear violations.
+  [.claude/rules/powershell-hook-security.md](.claude/rules/powershell-hook-security.md).
 
 ## Conventions
 
