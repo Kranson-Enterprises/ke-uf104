@@ -9,7 +9,11 @@ libraries) and how they enter version control.
   the **IDE** (structured editors). Do **not** hand-edit repository internals.
 - The **filesystem bridge is XML Export/Import**:
   - Export via the IDE (Main Menu ≡ / Actions → Export, with a retrieve profile)
-    or `$ude("export")`. **There is no command-line export switch.**
+    or `$ude("export")`. **There is no command-line export switch** for
+    repository definitions. (The `/sto /mwr=ws|com` / `/sto /lan=jav` switches
+    export *deployment artifacts* — WSDL / COM DLL / Java wrappers — from
+    signatures; that is packaging, not the VCS XML round-trip, and its output is
+    not `/imp`-importable.)
   - Import via `/imp` (exit 0/1) or `$ude("import")`.
 - **Never use Data Copy (`/cpy`, `$ude("copy")`) for Repository definitions** — it
   performs a physical copy that ignores referential integrity and **can corrupt

@@ -260,6 +260,13 @@ quoted or the IDE fails to find `usys.ini`:
   `0099 - Command line string not acceptable` (and exit code 1). The switch
   reference has no `/exp`. Use the IDE **Export** action or ProcScript
   `$ude("export")`; only **`/imp`** exists for the command line (import).
+  - 🔎 *Don't confuse this with `/sto`.* The Library documents `/sto /mwr=ws`,
+    `/sto /mwr=com`, and `/sto /lan=jav`, which **do** "export" from the command
+    line — but they emit **deployment artifacts** (a WSDL file, a self-registering
+    COM interface DLL, or Java call-in wrappers) generated from a service
+    **signature**. That is service *packaging*, not the repository-definition XML
+    used for VCS, and its output is **not** `/imp`-importable. So "no command-line
+    export switch" remains true for the **repository round-trip** facility.
 
 > The repository-as-source-of-truth rule:
 > [.claude/rules/uniface-repository-source-of-truth.md](../.claude/rules/uniface-repository-source-of-truth.md).
