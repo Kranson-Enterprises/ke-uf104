@@ -15,11 +15,21 @@
   gitignored `webfetched/` folder and must never be committed or published.
 - **Personal memories stay local** in the gitignored `.claude/memory/`. Never put
   secrets in memory either.
+- **Client-confidential content & PII** — meeting/handoff notes, client names and
+  internal architecture, **third-party email addresses** and other PII, and commercial
+  figures (budgets, rates) are **confidential**. Don't commit them to this tooling repo;
+  keep them in a sanctioned, access-controlled location. If they must be in-repo, keep
+  them **local/gitignored**, and remember **private ≠ safe**: a private repo can be
+  shared, forked, or made public, and the data still sits on a third-party code host.
+  (This repo's `business/` notes are the live example — see
+  [worklog/016](../../worklog/016-workspace-security-review.md).)
 
 ## Why
 
-Licensing (proprietary docs), security (credentials), and privacy (memory). A leak
-into Git history is hard to undo, and pushing licensed content is a license breach.
+Licensing (proprietary docs), security (credentials), privacy (memory + PII), and client
+confidentiality. A leak into Git history is hard to undo, pushing licensed content is a
+license breach, and exposing a client's people/architecture can breach a confidentiality
+obligation.
 
 ## How to apply
 

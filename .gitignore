@@ -24,3 +24,8 @@ uniface/project/dbms/
 uniface/project/ide_state.zip
 uniface/project/resources/
 uniface/project/Your Project Folder.txt
+
+# Client-confidential handoff/meeting notes & third-party PII — keep LOCAL only,
+# never tracked. Purged from history on 2026-06-30 (worklog/016). See
+# .claude/rules/protect-secrets-and-proprietary.md.
+business/
