@@ -1,0 +1,14 @@
+# Uniface XML exports are byte-faithful serializations of repository objects.
+# Git must be a faithful COURIER, never a transformer: do NOT convert line
+# endings (CRLF<->LF) or otherwise rewrite these files across platforms
+# (Windows IDE  <->  Unix/Linux deploy target). EOL/encoding drift across
+# platform moves is a classic cause of Uniface import/export breakage and
+# all-lines-changed diff noise. `-text` disables EOL normalization while
+# keeping textual diffs, and preserves exact bytes incl. any UTF-8 BOM.
+# See worklog/020 and .claude/rules/uniface-export-staging.md.
+
+workarea/**/*.xml   -text
+components/**/*.xml  -text
+src/**/*.xml         -text
+
+# Repository round-trip artifacts elsewhere, if added later, should follow suit.
