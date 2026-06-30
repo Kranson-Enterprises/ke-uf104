@@ -49,6 +49,25 @@ crashed the IDE launch on 2026-06-27. Wired in `settings.json` as:
 
 Enforces the rule in [../rules/quote-paths-with-spaces.md](../rules/quote-paths-with-spaces.md).
 
+### `protect-generated-output.ps1` — block edits to generated output (PreToolUse)
+
+Blocks `Write`/`Edit`/`NotebookEdit` to **compiler-generated** Uniface artifacts —
+generated DSP client JS (`**/dspjs/*.js`), DSP runtime pages (`*.dsp`), deployed
+`webapps/uniface/` web output, the `project/resources/` compiled tree, and compiled
+runtime objects (`*.frm/.rpt/.svc/.cpt`). These are overwritten on every compile, so
+hand-edits are silently lost; the source of truth is the repository object. Wired in
+`settings.json` under the `Write|Edit|NotebookEdit` matcher. Enforces
+[../rules/uniface-dsp-web-conventions.md](../rules/uniface-dsp-web-conventions.md) and
+[../rules/uniface-repository-source-of-truth.md](../rules/uniface-repository-source-of-truth.md).
+Same fail-open design as above (any parse error / non-matching path → exit 0). For a
+genuinely hand-maintained `/ext` `.hts` layout you own, write it via a shell command
+rather than the Edit tool. Test:
+
+```powershell
+'{"tool_name":"Edit","tool_input":{"file_path":"x/webapps/uniface/dspjs/a.js"}}' |
+  pwsh -NoProfile -File .claude/hooks/protect-generated-output.ps1; $LASTEXITCODE  # 2 = blocked
+```
+
 #### Caveats (this is the "tricky" part — read before trusting it)
 
 - **Heuristic, not a shell parser.** It cannot, in general, know whether a space

@@ -26,6 +26,8 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 | `/uniface-asn-review` | Review an `.asn` against the dev→prod checklist. |
 | `/uniface-cli` | Print the verified CLI cheat-sheet (no execution). |
 | `/uniface-dsp-review` | Review or scaffold DSP client JS + layout against the verified API. |
+| `/uniface-endpoint-review` | Audit a component for character-mode + web (DSP/USP) portability — GUI-only props/triggers, text overflow, misplaced logic. |
+| `/uniface-name-check` | Validate a proposed object name against the naming & reserved-word rules (length, charset, reserved, namespace). |
 | `/worklog-new` | Create the next sequential `worklog/00X` entry. |
 
 **Note:** the compile/import/gensql commands run `ide.exe` against the

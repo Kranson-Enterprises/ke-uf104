@@ -53,6 +53,23 @@ every saved memory with a one-line hook. See
   default**, never `/cpy`, and honor the "dirty"/orphan guard.
   [.claude/rules/uniface-workarea-sync.md](.claude/rules/uniface-workarea-sync.md);
   design in [docs/uniface-workarea.md](docs/uniface-workarea.md).
+- **Character-mode & web endpoints (target shape)** — this app delivers **character-mode
+  Forms to a non-GUI terminal** and **web server pages (DSP/USP)**; rich Windows GUI is
+  exercise-only. Unrecognized GUI properties are **silently ignored** (not errors) on the
+  character endpoint, character mode renders **Unifields not widgets** (basic video attrs
+  only) and **truncates** overflowing text — so name the endpoint and flag GUI-only
+  assumptions. [.claude/rules/uniface-character-and-web-endpoints.md](.claude/rules/uniface-character-and-web-endpoints.md);
+  review with [/uniface-endpoint-review](.claude/commands/uniface-endpoint-review.md).
+- **Trigger & ProcScript placement** — Uniface 10 **module-overlay inheritance**; a local
+  same-named trigger **silently overrides** inherited modeled code. Keep shared business
+  rules + DB I/O in the **model / entity services**, presentation components thin; field
+  triggers available depend on the rendering endpoint.
+  [.claude/rules/uniface-trigger-placement.md](.claude/rules/uniface-trigger-placement.md).
+- **Object naming & reserved words** — ≤ 60 chars, `A–Z 0–9 _`, must begin with a letter,
+  **case-folded** (can't distinguish by case); component namespace is **global**; avoid
+  reserved words; ProcScript file names must be **cross-platform** for the Unix/Linux
+  target. [.claude/rules/uniface-object-naming.md](.claude/rules/uniface-object-naming.md);
+  validate with [/uniface-name-check](.claude/commands/uniface-name-check.md).
 
 ## Conventions
 
