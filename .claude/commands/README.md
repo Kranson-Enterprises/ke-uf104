@@ -21,6 +21,7 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 | `/uniface-compile` | CLI compile (`/all /nodebug` by default; targeted via args). |
 | `/uniface-import` | Import XML definitions (`/imp`) with exit-code check. |
 | `/uniface-export` | Export to XML for VCS (IDE / `$ude` — no CLI export switch). |
+| `/uniface-workarea-sync` | Sync repo ↔ `workarea/` (status/pull/push; dry-run by default; WAS-emulation skeleton). |
 | `/uniface-gensql` | Generate target-DBMS DDL (`/genSql`) for deployment. |
 | `/uniface-asn-review` | Review an `.asn` against the dev→prod checklist. |
 | `/uniface-cli` | Print the verified CLI cheat-sheet (no execution). |

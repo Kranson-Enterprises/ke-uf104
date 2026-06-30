@@ -47,6 +47,12 @@ every saved memory with a one-line hook. See
   `OnChange` fires on interactive change only; author HTML5 and target evergreen
   browsers (ES2015 floor).
   [.claude/rules/uniface-dsp-web-conventions.md](.claude/rules/uniface-dsp-web-conventions.md).
+- **WorkArea file↔repository sync** — the repository is the master of record and the
+  Git-tracked `workarea/` tree is the **WAS-compatible** serialization (one XML per
+  object, class subfolders); sync is export→WorkArea / import←WorkArea, **dry-run by
+  default**, never `/cpy`, and honor the "dirty"/orphan guard.
+  [.claude/rules/uniface-workarea-sync.md](.claude/rules/uniface-workarea-sync.md);
+  design in [docs/uniface-workarea.md](docs/uniface-workarea.md).
 
 ## Conventions
 

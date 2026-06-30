@@ -10,8 +10,12 @@ Any filesystem path that contains a space **must** be quoted so it is passed as 
 single argument. This applies to executables, switch values, working directories,
 and environment values alike.
 
-The Uniface install lives under `C:\Program Files\Rocket Uniface 10 Community
-Edition\...`, which contains **two** spaced segments, so this comes up constantly.
+Paths **may** contain spaces — and a client's Uniface install often lives under
+`C:\Program Files\Rocket Uniface 10 Community Edition\...` (two spaced segments),
+so this comes up constantly. This machine's install was deliberately placed at the
+space-free `C:\ref` to defuse the problem at the source (see worklog/011), but the
+rule still holds defensively: any spaced path — project dirs, user profiles, client
+installs — must be quoted as a whole token.
 
 ## Why
 

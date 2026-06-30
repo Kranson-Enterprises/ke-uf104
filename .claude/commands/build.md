@@ -10,12 +10,12 @@ ad-hoc compile without the scripts, use [/uniface-compile](uniface-compile.md).
 
 Steps:
 1. Confirm [scripts/setup-env.bat](../../scripts/setup-env.bat) points
-   `UNIFACE_HOME` at the real install root (CE default:
-   `C:\Program Files\Rocket Uniface 10 Community Edition`). It derives
-   `IDE_EXE`, `UNIFACE_ADM`, and `UNIFACE_PROJECT` from that.
+   `UNIFACE_HOME` at the real install root (this machine: `C:\ref`). It derives
+   `IDE_EXE` and `UNIFACE_ADM` from that, and reads `UNIFACE_PROJECT` from
+   `usys.ini [install] project=` (falling back to the in-repo `uniface\project`).
 2. Run the build. `build.bat` calls `setup-env.bat` itself, so one command does
-   it (the script path has no spaces; the install paths it uses do, and the
-   scripts quote those as whole tokens):
+   it. Paths are quoted as whole tokens regardless (defensive — client installs
+   often live under spaced paths even though this machine's `C:\ref` does not):
    ```
    & ".\scripts\build.bat" $ARGUMENTS
    ```

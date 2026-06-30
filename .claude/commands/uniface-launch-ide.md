@@ -9,8 +9,10 @@ exits immediately (see [.claude/rules/quote-paths-with-spaces.md](../rules/quote
 and worklog/002).
 
 Steps:
-1. Resolve paths. CE default install root:
-   `C:\Program Files\Rocket Uniface 10 Community Edition` (confirm it exists).
+1. Resolve paths. This machine's install root is `C:\ref` (space-free); confirm it
+   exists, or read it from `usys.ini [install] root=` (strip the trailing
+   `\common`). Older/default installs may live under
+   `C:\Program Files\Rocket Uniface 10 Community Edition` (spaced — quote it).
    - exe = `<root>\common\bin\ide.exe`
    - adm = `<root>\uniface\adm`
    - Read `<root>\uniface\adm\usys.ini` `[install]` for `project=` (working dir)

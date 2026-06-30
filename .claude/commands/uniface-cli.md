@@ -20,5 +20,7 @@ Include:
   ESV=Entity Service, SSV=Session Service, DSP=Dynamic SP, USP=Static SP.
 - **Caveat:** CLI fails if the Repository is unmigrated/incompatible — migrate via
   the interactive IDE first.
-- **Quoting rule:** always quote spaced paths as whole tokens, e.g.
+- **Quoting rule:** always quote spaced paths as whole tokens. This machine's
+  install is space-free (`C:\ref\common\bin\ide.exe`), but client installs often
+  are not, e.g.
   `& "C:\Program Files\Rocket Uniface 10 Community Edition\common\bin\ide.exe" "/adm=...\uniface\adm"`.

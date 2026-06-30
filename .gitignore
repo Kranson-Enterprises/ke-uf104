@@ -15,3 +15,12 @@ obj/
 
 # Saved copies of Rocket's proprietary/licensed docs — keep local, do not publish
 webfetched/
+
+# Uniface live install-project runtime artifacts. The repository database and IDE
+# state are the LIVE master-of-record / transient UI state — NOT the VCS
+# serialization (XML exports are; see uniface-repository-source-of-truth rule).
+# install_info.txt is kept tracked as a baseline record of the install.
+uniface/project/dbms/
+uniface/project/ide_state.zip
+uniface/project/resources/
+uniface/project/Your Project Folder.txt
