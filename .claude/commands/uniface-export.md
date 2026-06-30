@@ -15,6 +15,12 @@ server", not export). Use one of:
    resources when run from a deployed app.
 
 Guidance:
+- **Where to save the export file:** stage Uniface engine output in the gitignored
+  project **`scratch/`** folder — **never** the Claude scratchpad (session-specific /
+  ephemeral) or ad-hoc `C:\temp`
+  ([.claude/rules/uniface-export-staging.md](../rules/uniface-export-staging.md)).
+  WorkArea objects go to `workarea/<class>/`; verify in `scratch/`, then copy into the
+  tracked tree.
 - Write exports into `components\` (components) and `src\` (model, libraries) as
   the VCS-visible serialization. The repository DB remains the source of truth.
 - For a team, keep a **consistent DB collation** so XML/Git diffs stay clean.

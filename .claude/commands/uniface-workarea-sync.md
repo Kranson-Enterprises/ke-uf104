@@ -36,8 +36,14 @@ export/import facility, against the Git-tracked **`workarea/`** tree. Architectu
 
 ### `push`  (export → WorkArea; preview, then confirm)
 - **There is no CLI export switch.** Export via the IDE **Export** action or a small
-  `$ude("export")` snippet run under `ide.exe`, writing **one `.xml` per object** into
-  the matching `workarea/<class>/` folder.
+  `$ude("export")` snippet run under `ide.exe`, writing **one `.xml` per object**.
+- **Export per object** (not a project-granular dump) — a combined export binds many
+  objects across meta-tables and **must not be split** (integrity risk;
+  [uniface-repository-source-of-truth](../rules/uniface-repository-source-of-truth.md)).
+- **Stage to `scratch/`, then copy into `workarea/<class>/`.** Save the IDE export into
+  the gitignored project **`scratch/`** folder — **never** the Claude scratchpad or
+  `C:\temp` ([uniface-export-staging](../rules/uniface-export-staging.md)) — verify the
+  `<UNIFACE …>` wrapper, then copy (exact bytes) into the matching `workarea/<class>/`.
 - Preview which objects/classes would be written; confirm before writing files.
 
 ## Always

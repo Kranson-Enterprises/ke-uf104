@@ -24,8 +24,16 @@ uniface/project/dbms/
 uniface/project/ide_state.zip
 uniface/project/resources/
 uniface/project/Your Project Folder.txt
+# Compiled-module information generated at compile time (not source).
+uniface/project/*.cmi
 
 # Client-confidential handoff/meeting notes & third-party PII — keep LOCAL only,
 # never tracked. Purged from history on 2026-06-30 (worklog/016). See
 # .claude/rules/protect-secrets-and-proprietary.md.
 business/
+
+# Local staging for Uniface IDE/engine export artifacts (NEVER the Claude scratchpad
+# or ad-hoc C:\temp). Contents are gitignored; the README is tracked so the folder and
+# its contract stay in the repo. See .claude/rules/uniface-export-staging.md.
+scratch/*
+!scratch/README.md

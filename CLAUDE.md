@@ -53,6 +53,12 @@ every saved memory with a one-line hook. See
   default**, never `/cpy`, and honor the "dirty"/orphan guard.
   [.claude/rules/uniface-workarea-sync.md](.claude/rules/uniface-workarea-sync.md);
   design in [docs/uniface-workarea.md](docs/uniface-workarea.md).
+- **Uniface export staging** — artifacts the Uniface IDE/engine writes (the Export
+  action, `$ude("export")`, `/genSql` dumps) stage in the **gitignored project
+  `scratch/`** folder — **never** the Claude scratchpad (session-specific/ephemeral) or
+  ad-hoc `C:\temp`. WorkArea objects still go to `workarea/`; runtime/wasv output stays
+  where the `.asn` puts it. Promote from `scratch/` into the tracked tree by an explicit
+  copy. [.claude/rules/uniface-export-staging.md](.claude/rules/uniface-export-staging.md).
 - **Character-mode & web endpoints (target shape)** — this app delivers **character-mode
   Forms to a non-GUI terminal** and **web server pages (DSP/USP)**; rich Windows GUI is
   exercise-only. Unrecognized GUI properties are **silently ignored** (not errors) on the
