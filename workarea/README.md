@@ -30,10 +30,20 @@ SCM history and review stay per object.
 
 ## Status
 
-**Scaffold only — no objects exported yet.** Populate with
-[/uniface-workarea-sync](../.claude/commands/uniface-workarea-sync.md) (`push`), which
-is **dry-run by default**. This WorkArea is *not yet* a live, watched sync — see the
-"designed-but-deferred" section of the design doc.
+**First objects populated (2026-06-30 — `MYPROJECT` Hello World DSP).** First live
+`push` (IDE per-object Export, no CLI export) — worklog
+[018](../worklog/018-workarea-first-push-helloworld.md):
+
+| File | Object | Notes |
+| --- | --- | --- |
+| `prj/MYPROJECT.xml` | project | project record + membership ref to `HELLO_WORLD` |
+| `cpt/HELLO_WORLD.xml` | DSP component | self-contained; the **`GREETING` entity is a non-DBMS, component-painted entity embedded in the component** (UXGROUP `UFORM=HELLO_WORLD`) — there is **no standalone `ent/` object** to export |
+
+Each file is a complete, integrity-preserving `<UNIFACE release="10.4">` export placed
+by exact-byte copy (**never split** a combined dump — a definition's integrity spans
+many meta-tables). The pull/`/imp` round-trip is **not yet exercised** — deferred to the
+next pass (see the "designed-but-deferred" section of the design doc). Still no live
+watcher.
 
 > Migration note: the older flat `components/` + `src/` export folders still exist;
 > folding them into this tree is a tracked follow-up, not yet done.
