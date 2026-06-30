@@ -96,16 +96,30 @@ private). Executed this pass:
    --invert-paths` (rewrites every commit/ref; SHAs change).
 3. `business/` files **restored locally as untracked** and added to `.gitignore` (kept on
    disk, never tracked again).
-4. `origin` re-added; **`main` force-pushed** (`--force-with-lease`) so the GitHub copy no
-   longer contains the files in any commit.
+4. `origin` re-added; **`main` force-push prepared but NOT executed here** — this shell has
+   no GitHub SSH key (`Permission denied (publickey)`). The operator runs it from an
+   authenticated terminal:
+   `git push --force-with-lease=main:badc00dd8690295c923f4007813954c288f2188f origin main`
+   (the lease aborts if `origin/main` is no longer `badc00d`). After it lands, `origin/main`
+   = `09f01df` and `business/` is gone from GitHub. Verified locally: `business/` absent
+   from all history, files present + gitignored, no confidential tokens in any tracked file.
 
-> Note: force-push rewrote shared history — any other clone of `main` must reset/re-clone.
-> The pre-purge bundle is the recovery point if needed.
+> Note: force-push rewrites shared history — any other clone of `main` must reset/re-clone.
+> Residual: already-cloned copies and GitHub cached/PR refs may retain `badc00d` until GC;
+> private repo + confidential-not-credential content makes this typically acceptable. The
+> pre-purge bundle (off-repo) is the recovery point.
+>
+> **Merge-then-push footgun (operator deferred the push to post-review/merge):** local
+> `main` (`09f01df`, purged) and `origin/main` (`badc00d`, still has `business/`) have
+> **divergent history**. (1) After merging `feature` into `main`, the push to `origin`
+> will be **non-fast-forward → requires `--force-with-lease`** (a plain push is rejected;
+> that's expected). (2) **Do NOT `git pull`/merge `origin/main` into local** — it would
+> **resurrect `business/`**. Overwrite the remote via force-push; don't pull from it.
 
 ### Remaining (lower) actions
-- `git rm` the inert `gitignore`.
-- Add `permissions: contents: read` to `ci.yml`.
-- (Optional) history cleanup of `usys.db`/`ide_state.zip`.
+- ✅ Removed the inert `gitignore` (commit `5d5cd4a`).
+- ✅ Added `permissions: contents: read` to `ci.yml` (commit `5d5cd4a`).
+- (Optional) history cleanup of `usys.db`/`ide_state.zip` — low value, deferred.
 
 ## References
 - In-repo: the new subagent + rule clause; [015](015-powershell-security-and-preflight.md),
