@@ -41,8 +41,19 @@ infra**: the repo DB is a personal cache; the **XML WorkArea is the shared truth
 > **UD6 ≠ WAS.** **UD6** is a **third-party commercial** repository *driver* from
 > **March Hare Software** that stores objects as text files at the driver layer; it is
 > **not** a Rocket product and is **not** bundled with Community Edition. ⚠️ **WAS**
-> (Work Area Support) is **Rocket's MIT-licensed sample** and the tool we model. They
-> solve the same problem two ways; we emulate **WAS**.
+> (Work Area Support) is **Uniface B.V.'s sample** (`github.com/uniface/WASListener`)
+> and the tool we model. They solve the same problem two ways; we emulate **WAS**.
+>
+> **⚠️ License correction (2026-06-30, verified from the repo `LICENSE`).** Earlier notes
+> here and in [worklog/012](../worklog/012-workarea-introduction.md) called WAS
+> "MIT-licensed." **That is wrong.** The actual license is **Copyright © 2019 Uniface
+> B.V.**, and it **bars commercial use**: *"Licensee shall not be entitled to use the
+> Software and the results of use of the Software ('Results') for any commercial or
+> illegal purposes."* (as-is, liability capped at €1000). For **personal skill-refresh /
+> learning** this sample is fine; for **client/commercial delivery**, do **not** rely on
+> it — verify terms with Rocket or use the commercial **UD6** path. Full discovery +
+> integration: [worklog/021](../worklog/021-was-plugin-discovery-integration.md) and
+> [uniface-was-plugin-integration.md](uniface-was-plugin-integration.md).
 
 **WAS has two parts:** ✅
 1. **`VersionControl.uar`** — an **IDE plugin** (Uniface app, project `VERSIONCONTROL`,
