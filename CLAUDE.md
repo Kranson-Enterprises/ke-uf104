@@ -76,6 +76,14 @@ every saved memory with a one-line hook. See
   reserved words; ProcScript file names must be **cross-platform** for the Unix/Linux
   target. [.claude/rules/uniface-object-naming.md](.claude/rules/uniface-object-naming.md);
   validate with [/uniface-name-check](.claude/commands/uniface-name-check.md).
+- **UAR packaging & hardening** — a `.uar` is a ZIP of compiled objects in Uniface's
+  standardized type-subdirs; build it by **compile-to-UAR** (`$RESOURCES_OUTPUT=.uar`) or
+  **`urm copy`** (there is no one-click project button). `[SETTINGS]` **does not strip
+  trailing `;` inline comments** (they corrupt the value — use own-line comments only).
+  Production = `/all /nodebug`; harden releases with **`cert.exe`** (archive certification)
+  + **`pathscrambler`** (asn secrets).
+  [.claude/rules/uniface-uar-packaging-and-hardening.md](.claude/rules/uniface-uar-packaging-and-hardening.md);
+  build with [/uniface-package-uar](.claude/commands/uniface-package-uar.md).
 - **PowerShell hook & script security** — target patched **PowerShell 7+** (the
   [preflight](.claude/hooks/preflight-powershell.ps1) advises on version/updates); no
   surprise network calls from auto-run hooks (network is opt-in, pinned, throttled,
