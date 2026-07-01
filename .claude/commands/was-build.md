@@ -40,10 +40,12 @@ working-dir-relative `.\dbms\usys.db`.
 
 ## Then: Stage 2 — wire into MYPROJECT (separate task)
 
-Add a project-local asn (a future `/uniface-launch-ide --was-project`) chaining the
-install's, with `[RESOURCES]` = `VersionControl.uar`, `IDE_DEFINE_USERMENUS=VC_UPDATED`,
-and `WAS_ROOT_FOLDER = …\ke-uf104\workarea`. Then use **Import WorkArea** / **WorkArea
-Export** against `workarea/` (the real versions of
+Run the **`was-project-setup`** skill
+([.claude/skills/was-project-setup/SKILL.md](../skills/was-project-setup/SKILL.md)): it
+asks download-vs-build for the UAR, backs up config, and writes the project-local asn
+chaining the install's — `[RESOURCES]` = `VersionControl.uar`,
+`IDE_DEFINE_USERMENUS=VC_UPDATED`, `WAS_ROOT_FOLDER = …\ke-uf104\workarea`. Then use
+**Import WorkArea** / **WorkArea Export** against `workarea/` (the real versions of
 [/uniface-workarea-sync](uniface-workarea-sync.md) pull/push).
 
 Related rules: [uniface-workarea-sync](../rules/uniface-workarea-sync.md),
