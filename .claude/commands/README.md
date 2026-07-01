@@ -35,3 +35,17 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 **Note:** the compile/import/gensql commands run `ide.exe` against the
 Repository; if it has unmigrated/incompatible data, CLI runs fail — open the
 interactive IDE once to migrate first.
+
+## WAS plugin build (WorkArea Support — non-default group)
+
+WAS-specific commands for building the Work Area Support IDE plugin
+(`VersionControl.uar`) from the sibling `WASListener` clone. **Non-commercial license —
+personal skill-refresh only** (worklog 021). Kept separate from the `/uniface-*` defaults.
+
+| Command | What it does |
+| --- | --- |
+| `/was-build` | Orchestrator/reference for the whole build (Phases A–D) — see [was-build.md](was-build.md). |
+| `/was-package` | Build `IdePlugin\VersionControl.uar` (compile-to-UAR, auto asn revert, verify). |
+
+Also used by the group: `/uniface-launch-ide --was` (sandbox launch),
+`/uniface-import-batch` (Phase B). Design: [docs/uniface-was-plugin-integration.md](../../docs/uniface-was-plugin-integration.md).
