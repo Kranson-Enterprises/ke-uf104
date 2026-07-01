@@ -26,6 +26,18 @@ command and any manual export/import done in WorkArea terms. Grounded in
 - **WAS-compatible layout:** one subfolder per object class, **one `.xml` per object**
   (`aps/ cpt/ ent/ prj/ lib*/`). Keep it that way so real WASListener could later
   watch the same tree. See [workarea/README.md](../../workarea/README.md).
+- **Export *project* objects only — never Uniface-delivered `USYS*` / `U*` system
+  objects.** Every repository ships with Uniface's own reserved-namespace objects
+  (verified in MYPROJECT: `USYSUPALETTE_FRM`, `USYSUPALETTE_RPT`, `USYSSTAT`, …), and the
+  WAS WorkArea Export form lists them all as "new" on first use. **Do not press
+  "Export All"** — it drags delivered system objects into the Git tree (bloat, plus
+  Rocket-delivered content in VCS) and they aren't your source. Export **only your own
+  objects** (per-object Export / a scoped selection). And **never delete** the `U*`/`USYS*`
+  objects to "tidy up" — the `U` prefix is Uniface's reserved namespace
+  ([uniface-object-naming.md](uniface-object-naming.md)); removing them deletes repository
+  definitions and can break the IDE (e.g. the palette forms). The plugin's Export form
+  currently exposes **no exclude/retrieve filter** — tracked as
+  [docs/feedback-workarea-plugin-system-object-filter.md](../../docs/feedback-workarea-plugin-system-object-filter.md).
 - **Resolve paths from `usys.ini [install]`** and **quote spaced tokens**
   ([quote-paths-with-spaces.md](quote-paths-with-spaces.md),
   [uniface-cli-and-build-hygiene.md](uniface-cli-and-build-hygiene.md)).

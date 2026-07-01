@@ -26,6 +26,10 @@ uniface/project/resources/
 uniface/project/Your Project Folder.txt
 # Compiled-module information generated at compile time (not source).
 uniface/project/*.cmi
+# Project-local IDE assignment file — machine-specific absolute paths and (for the
+# WAS WorkArea plugin) enables a non-commercial plugin. Local runtime config, never
+# tracked; recreate via the was-project-setup skill. See uniface-export-staging rule.
+uniface/project/ide.asn
 
 # Client-confidential handoff/meeting notes & third-party PII — keep LOCAL only,
 # never tracked. Purged from history on 2026-06-30 (worklog/016). See

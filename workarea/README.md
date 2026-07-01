@@ -28,6 +28,17 @@ Add further `lib*` / class folders as objects are exported. Files are plain Unif
 XML exports (`<UNIFACE release="10.4" repversion="…">`), **one object per file** so
 SCM history and review stay per object.
 
+## Scope: project objects only — no Uniface system objects
+
+This tree holds **your project's** objects, **not** Uniface's delivered `USYS*` / `U*`
+system objects (e.g. `USYSUPALETTE_FRM`, `USYSUPALETTE_RPT`, `USYSSTAT`). Those ship in
+every repository and the WAS WorkArea Export form lists them all as "new" on first use —
+**do not "Export All"**; export only your own objects. Never *delete* the `U*`/`USYS*`
+objects to tidy the list either: the `U` prefix is Uniface's reserved namespace, and
+removing them deletes repository definitions and can break the IDE. Rationale +
+non-destructive filtering: [uniface-workarea-sync](../.claude/rules/uniface-workarea-sync.md);
+missing-filter feedback: [docs/feedback-workarea-plugin-system-object-filter.md](../docs/feedback-workarea-plugin-system-object-filter.md).
+
 ## Status
 
 **First objects populated (2026-06-30 — `MYPROJECT` Hello World DSP).** First live
