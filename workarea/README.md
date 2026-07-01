@@ -37,7 +37,7 @@ every repository and the WAS WorkArea Export form lists them all as "new" on fir
 objects to tidy the list either: the `U` prefix is Uniface's reserved namespace, and
 removing them deletes repository definitions and can break the IDE. Rationale +
 non-destructive filtering: [uniface-workarea-sync](../.claude/rules/uniface-workarea-sync.md);
-missing-filter feedback: [docs/feedback-workarea-plugin-system-object-filter.md](../docs/feedback-workarea-plugin-system-object-filter.md).
+plugin Export/Import feedback: [docs/feedback-workarea-plugin-export-import.md](../docs/feedback-workarea-plugin-export-import.md).
 
 ## Status
 

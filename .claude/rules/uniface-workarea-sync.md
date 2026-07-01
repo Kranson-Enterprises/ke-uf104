@@ -37,7 +37,16 @@ command and any manual export/import done in WorkArea terms. Grounded in
   ([uniface-object-naming.md](uniface-object-naming.md)); removing them deletes repository
   definitions and can break the IDE (e.g. the palette forms). The plugin's Export form
   currently exposes **no exclude/retrieve filter** — tracked as
-  [docs/feedback-workarea-plugin-system-object-filter.md](../../docs/feedback-workarea-plugin-system-object-filter.md).
+  [docs/feedback-workarea-plugin-export-import.md](../../docs/feedback-workarea-plugin-export-import.md).
+- **⚠️ The real plugin's Import is a destructive, no-preview replace — our emulation is
+  deliberately safer.** Verified (worklog 027): **Import WorkArea** shows no selection /
+  preview / confirmation and runs **`Delete <object>` then `Import <object>`** for **every**
+  object under `WAS_ROOT_FOLDER`, hard-replacing the repository copy from disk. So it can
+  silently overwrite uncommitted repository work (and the delete phase can *remove* an
+  object on a mid-run failure). Treat **Import WorkArea as a repository-mutating action**:
+  back up / commit the repo state first and only run it against a known-good tree. This
+  command's `pull` stays **dry-run-by-default, preview-first, deletions-flagged** — do not
+  "match" the real plugin by dropping the preview.
 - **Resolve paths from `usys.ini [install]`** and **quote spaced tokens**
   ([quote-paths-with-spaces.md](quote-paths-with-spaces.md),
   [uniface-cli-and-build-hygiene.md](uniface-cli-and-build-hygiene.md)).

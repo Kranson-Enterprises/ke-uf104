@@ -95,7 +95,7 @@ round-trip**:
   fine technically, but they're Rocket-delivered, identical across installs, and pollute
   the tree — export **project objects only**
   ([uniface-workarea-sync](../.claude/rules/uniface-workarea-sync.md), worklog 024;
-  feedback [docs/feedback-workarea-plugin-system-object-filter.md](../docs/feedback-workarea-plugin-system-object-filter.md)).
+  feedback [docs/feedback-workarea-plugin-export-import.md](../docs/feedback-workarea-plugin-export-import.md)).
 
 ## 6. Takeaways
 
