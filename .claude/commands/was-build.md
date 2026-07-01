@@ -34,8 +34,9 @@ working-dir-relative `.\dbms\usys.db`.
 - **Package — build the UAR.** Run **[/was-package](was-package.md)** to produce
   `IdePlugin\VersionControl.uar` (compile-to-UAR + auto asn revert + verify).
 - **Phase D — clear the "all new" state.** Uncomment `IDE_DEFINE_USERMENUS=VC_UPDATED` in
-  the sandbox `ide.asn`, restart the IDE, and use burger menu **WorkArea Export/Revert →
-  Export All**.
+  the sandbox `ide.asn`, restart the IDE, and use burger menu **WorkArea Export → Export
+  All** (per-object Export/Revert buttons dim = no pending delta). **Exclude CPT
+  signatures** — they're derived compile output (in the `.uar` `sig/`), not WorkArea source.
 
 ## Then: Stage 2 — wire into MYPROJECT (separate task)
 
