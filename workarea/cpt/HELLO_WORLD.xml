@@ -129,10 +129,10 @@
  pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\DA,0,0,0,,0,0,0,," />
 <FLD name="WINPROP" seqno="62" type="S" level="2" pack="141" scale="0" length="0"
  pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\DB,0,0,0,,0,0,0,," />
-<FLD name="USCONTAINED" seqno="63" type="B" level="2" pack="128" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\DC,0,0,0,,0,0,0,," />
-<FLD name="ATTACHED" seqno="64" type="B" level="2" pack="128" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\DD,0,0,0,,0,0,0,," />
+<FLD name="USCONTAINED" seqno="63" type="B" level="2" pack="0" scale="0" length="1"
+ pointer="0" inum="0" ufocc="0" />
+<FLD name="ATTACHED" seqno="64" type="B" level="2" pack="0" scale="0" length="1"
+ pointer="0" inum="0" ufocc="0" />
 <FLD name="UPOPUP" seqno="65" type="S" level="2" pack="141" scale="0" length="0"
  pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\DE,0,0,0,,0,0,0,," />
 <FLD name="USPLITPROP" seqno="66" type="S" level="2" pack="141" scale="0" length="0"
@@ -141,12 +141,6 @@
  pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\E0,0,0,0,,0,0,0,," />
 <FLD name="HTMLSKELETON" seqno="68" type="S" level="2" pack="141" scale="0" length="0"
  pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\E1,0,0,0,,0,0,0,," />
-<FLD name="DSP_WIDGETTYPE" seqno="69" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\E2,0,0,0,,0,0,0,," />
-<FLD name="DSP_WIDGETPROPS" seqno="70" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\E3,0,0,0,,0,0,0,," />
-<FLD name="LAYOUTMODE" seqno="71" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\E4,0,0,0,,0,0,0,," />
 </DSC>
 <OCC>
 <DAT name="UTIMESTAMP">2026-06-30T16:18:16.00</DAT>
@@ -456,75 +450,6 @@ Welcome to Uniface 10&lt;/h1&gt;
 <DAT name="U_BORD">N</DAT>
 <DAT name="UALT_NAME" xml:space='preserve'>Empty Non-DBMS Entity</DAT>
 <DAT name="USP_WIDGETPROPS" xml:space='preserve'>U_ATLEASTONE=1&uSEP;U_STARTOCC=1</DAT>
-</OCC>
-</TABLE>
-<TABLE>
-<DSC name="UPROJECT" model="DICT" system="S" pseudo ="73" level="1" noupdate="0"
- rbk="0" ffsql="0" transnr="0" segsize="0" ufocc="0" charset=".U">
-<FLD name="ULABEL" seqno="1" type="S" level="2" pack="0" scale="0" length="60"
- pointer="0" inum="1" ufocc="0" mandatory="yes" idxnum="1" idxsnr="101" />
-<FLD name="UTIMESTAMP" seqno="2" type="E" level="2" pack="0" scale="0" length="15"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UKVERSION" seqno="3" type="N" level="2" pack="10" scale="0" length="2"
- pointer="0" inum="1" ufocc="0" idxnum="2" idxsnr="1" />
-<FLD name="UMVERSION" seqno="4" type="N" level="2" pack="10" scale="0" length="2"
- pointer="0" inum="1" ufocc="0" idxnum="3" idxsnr="1" />
-<FLD name="UDESCR" seqno="5" type="S" level="2" pack="13" scale="0" length="256"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UUARNAME" seqno="6" type="S" level="2" pack="0" scale="0" length="60"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UUARVERSION" seqno="7" type="S" level="2" pack="0" scale="0" length="60"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UPURPOSE" seqno="8" type="S" level="2" pack="1" scale="0" length="1"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UALT_NAME" seqno="9" type="S" level="2" pack="13" scale="0" length="128"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UKEYWORDS" seqno="10" type="S" level="2" pack="13" scale="0" length="256"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UWAORDER" seqno="11" type="N" level="2" pack="7" scale="0" length="5"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UCOMMENT" seqno="12" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",0,0,0,,1,0,1,\1D,0,0,0,," />
-<FLD name="UUARREADME" seqno="13" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\C2,0,0,0,,0,0,0,," />
-<FLD name="USTANDARDOUT" seqno="14" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\C3,0,0,0,,0,0,0,," />
-<FLD name="UCONNECTIVITYOUT" seqno="15" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\C4,0,0,0,,0,0,0,," />
-<FLD name="UEXTERNALOUT" seqno="16" type="S" level="2" pack="141" scale="0" length="0"
- pointer="0" inum="0" ufocc="0" varinfo=",1,0,2,\1F\C5,0,0,0,,0,0,0,," />
-</DSC>
-<OCC>
-<DAT name="ULABEL">MYPROJECT</DAT>
-<DAT name="UTIMESTAMP">2026-06-30T15:50:34.00</DAT>
-<DAT name="UKVERSION">7</DAT>
-<DAT name="UMVERSION">2</DAT>
-<DAT name="UPURPOSE">N</DAT>
-</OCC>
-</TABLE>
-<TABLE>
-<DSC name="UREFCPT" model="DICT" system="S" pseudo ="73" level="1" noupdate="0"
- rbk="0" ffsql="0" transnr="0" segsize="0" ufocc="0" charset=".U">
-<FLD name="UPROJECT" seqno="1" type="S" level="2" pack="0" scale="0" length="60"
- pointer="0" inum="2" ufocc="0" mandatory="yes" idxnum="1,5" idxsnr="101,1" />
-<FLD name="ULABEL" seqno="2" type="S" level="2" pack="0" scale="0" length="60"
- pointer="0" inum="2" ufocc="0" mandatory="yes" idxnum="1,4" idxsnr="102,1" />
-<FLD name="UKVERSION" seqno="3" type="N" level="2" pack="10" scale="0" length="2"
- pointer="0" inum="1" ufocc="0" idxnum="2" idxsnr="1" />
-<FLD name="UMVERSION" seqno="4" type="N" level="2" pack="10" scale="0" length="2"
- pointer="0" inum="1" ufocc="0" idxnum="3" idxsnr="1" />
-<FLD name="UDESCR" seqno="5" type="S" level="2" pack="13" scale="0" length="256"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UALT_NAME" seqno="6" type="S" level="2" pack="13" scale="0" length="128"
- pointer="0" inum="0" ufocc="0" />
-<FLD name="UWAORDER" seqno="7" type="N" level="2" pack="7" scale="0" length="5"
- pointer="0" inum="0" ufocc="0" />
-</DSC>
-<OCC>
-<DAT name="UPROJECT">MYPROJECT</DAT>
-<DAT name="ULABEL">HELLO_WORLD</DAT>
-<DAT name="UKVERSION">6</DAT>
-<DAT name="UMVERSION">2</DAT>
 </OCC>
 </TABLE>
 </UNIFACE>
