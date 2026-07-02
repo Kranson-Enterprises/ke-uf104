@@ -17,7 +17,7 @@ eyeball, one-off inspection XML, and any pre-WorkArea staging.
   still uses the Claude session scratchpad per the harness.
 
 **Promotion:** when a staged artifact is ready for version control, **copy** it into the
-tracked tree (`workarea/<class>/`, `components/`, `src/`) by an explicit, reviewed step —
+tracked tree (`workarea/<class>/`) by an explicit, reviewed step —
 don't leave deliverables in `scratch/`, and don't `/imp` or commit straight from here
 blindly.
 

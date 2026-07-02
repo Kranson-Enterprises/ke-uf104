@@ -28,7 +28,7 @@ the user **where to save** such an export.
   scratchpad** per the harness. This rule governs **Uniface-produced** artifacts and any
   workspace staging Claude directs the user to create.
 - **Promote, don't accumulate.** Move a staged artifact into the tracked tree
-  (`workarea/`, `components/`, `src/`) by an **explicit, reviewed copy**; don't `/imp` or
+  (`workarea/`) by an **explicit, reviewed copy**; don't `/imp` or
   commit straight from `scratch/`. `scratch/` is a holding area, not a deliverable home.
 - **Quote spaced paths** ([quote-paths-with-spaces](quote-paths-with-spaces.md)) — the
   `scratch/` path on this machine has none, but the habit holds for client installs.
@@ -41,7 +41,7 @@ session scratchpad couldn't land there and silently went to `C:\temp` instead
 ephemeral and Claude-internal; the **Uniface IDE/userver is a separate process driven by
 the user**, so its artifacts belong in a stable in-workspace location. Keeping them in a
 gitignored `scratch/` preserves the **repository-is-source-of-truth** model: `scratch/`
-holds, `workarea/` / `components/` / `src/` are the VCS serialization, runtime stays
+holds, `workarea/` is the VCS serialization, runtime stays
 gitignored where it is.
 
 ## How to apply

@@ -19,8 +19,8 @@ libraries) and how they enter version control.
   performs a physical copy that ignores referential integrity and **can corrupt
   the Repository**. `/cpy` is for entity *occurrences* (data) only, and its files
   are rejected by `/imp`.
-- Commit the **XML exports** as the VCS-visible serialization: components to
-  `components/`, model/libraries to `src/`.
+- Commit the **XML exports** as the VCS-visible serialization: one file per object under
+  the **WAS-compatible** [`workarea/`](../../workarea/README.md) tree (class subfolders).
 
 ## Why
 

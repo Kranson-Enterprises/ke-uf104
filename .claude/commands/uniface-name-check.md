@@ -27,7 +27,7 @@ length limit.
    `*.DICT`, `*.FRM`, `*.TEXT`, `*.USYS`, …). If unsure, say so and point to the
    Library's *Uniface Reserved Words* topic.
 5. **Component namespace collision** (components only) — names are unique across **all**
-   component types in one global namespace. Grep `components/` and `src/` exports for an
+   component types in one global namespace. Grep the `workarea/` exports for an
    existing object of that name and flag a clash.
 6. **Custom widget** — if naming a physical widget, reject a leading **`U`** (reserved
    for Uniface's own widgets).

@@ -6,8 +6,9 @@ This file is committed and loaded automatically at the start of every session.
 ## Project overview
 
 - Scaffold for a Uniface 10 project on **Windows**.
-- `components/` — Uniface components (`*.com`).
-- `src/` — sources.
+- `workarea/` — the Git-tracked, **WAS-compatible** serialization of repository objects
+  (one XML per object, class subfolders); the **single source-of-truth serialization**
+  (the older flat `components/`/`src/` scaffold was retired — worklog 030).
 - `scripts/` — build/env batch scripts (`setup-env.bat`, `build.bat`).
 - `docs/` — documentation.
 - `worklog/` — running work notes.

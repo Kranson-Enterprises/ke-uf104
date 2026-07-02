@@ -8,7 +8,5 @@
 # See worklog/020 and .claude/rules/uniface-export-staging.md.
 
 workarea/**/*.xml   -text
-components/**/*.xml  -text
-src/**/*.xml         -text
 
 # Repository round-trip artifacts elsewhere, if added later, should follow suit.

@@ -238,8 +238,9 @@ quoted or the IDE fails to find `usys.ini`:
 - **Import auto-migrates** compatible data and rejects incompatible/copy-created
   data. The separate **Data Copy** facility (`/cpy`, `$ude("copy")`) is **not**
   import-compatible — use export/import for VCS, **never** `/cpy` for definitions.
-- For this repo, that's the Uniface↔Git bridge: export objects as XML into
-  `components/` / `src/` and commit them as the VCS-visible serialization. Full
+- For this repo, that's the Uniface↔Git bridge: export objects as XML into the
+  **WAS-compatible `workarea/`** tree (one file per object) and commit them as the
+  VCS-visible serialization. Full
   IDE-vs-VSCode analysis:
   [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
 
@@ -683,8 +684,8 @@ For both the AI tooling and the human operator:
   only source of truth and Claude/Git can actually see and review your objects.
 - **Name a "known-good runtime version"** per deployable; pin it. Mixed runtime
   versions across client apps is a common support trap.
-- **For Claude-assisted workflow:** point Claude at exported sources (`src/`,
-  `components/`) and `.asn` files — it can review ProcScript, diff environment
+- **For Claude-assisted workflow:** point Claude at the exported objects in `workarea/`
+  and `.asn` files — it can review ProcScript, diff environment
   configs, and help script packaging/monitoring once the artifacts are in-repo.
 - **For the human operator:** build a one-page per-app runbook (assignment location,
   DB target, Router/Server ports, license location, start/stop steps).

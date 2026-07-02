@@ -113,9 +113,9 @@ workarea/
 - Files are **plain Uniface XML exports** — diffable, git-friendly, **one object per
   file** (so SCM history/permissions are per object).
 - This **supersedes** the older flat `components/` + `src/` convention from
-  [§1.5 onboarding](uniface-10-onboarding.md). Those folders stay as-is for now;
-  **folding them into `workarea/` is a tracked follow-up migration**, not done this
-  pass.
+  [§1.5 onboarding](uniface-10-onboarding.md). Those scaffold folders have been
+  **retired** — `workarea/` is now the single serialization
+  ([worklog/030](../worklog/030-fold-legacy-components-src-into-workarea.md)).
 - See [workarea/README.md](../workarea/README.md) for the on-disk contract.
 
 ## 4. How we emulate it now (WAS-ready)
@@ -154,7 +154,6 @@ files don't change. ⚠️ (CE bundling of WAS unconfirmed — likely self-build
 - A **safety hook** (block `/cpy` on definitions; warn before destructive replay)
   alongside [check-quoted-paths.ps1](../.claude/hooks/check-quoted-paths.ps1).
 - A **`uniface-workarea` subagent** for multi-step sync/review.
-- **Migration** of `components/` + `src/` into `workarea/`.
 - **Open questions** to resolve from gated docs / local install: WAS in CE?; the full
   `VC`/`GETWASFOLDER` `oprStatus` contract; whether the plugin calls `$ude` vs a
   lower-level API; branch/merge/conflict policy; exact `WAS_ROOT_FOLDER` asn wiring.

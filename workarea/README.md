@@ -56,5 +56,6 @@ many meta-tables). The pull/`/imp` round-trip is **not yet exercised** — defer
 next pass (see the "designed-but-deferred" section of the design doc). Still no live
 watcher.
 
-> Migration note: the older flat `components/` + `src/` export folders still exist;
-> folding them into this tree is a tracked follow-up, not yet done.
+> Migration note: the older flat `components/` + `src/` scaffold folders have been
+> **retired** (2026-07-02, [worklog/030](../worklog/030-fold-legacy-components-src-into-workarea.md))
+> — `workarea/` is the single serialization.
