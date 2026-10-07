@@ -1,0 +1,10 @@
+The following platformbuild has been used: wa1
+=============================================================
+Product = Rocket Uniface 10 Community Edition
+Version = 10.4.03.042
+Installation folder = C:\ref
+Project folder      = C:\Users\Bob\source\uniface\ke-uf104\uniface\project
+Shortcut group      = Rocket Uniface 10 Community Edition
+Platform            = w11, win
+Language            = en
+Uninstall key       = HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\{5B5E0E4D-99F2-430A-881B-9EAB0568FC98}

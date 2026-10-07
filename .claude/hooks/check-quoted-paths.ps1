@@ -11,6 +11,9 @@
 
 $ErrorActionPreference = 'Stop'
 
+# Advisory PowerShell version/update preflight (never blocks; see preflight-powershell.ps1).
+try { . "$PSScriptRoot/preflight-powershell.ps1"; Invoke-PowerShellPreflight } catch { }
+
 try {
     $raw = [Console]::In.ReadToEnd()
     if ([string]::IsNullOrWhiteSpace($raw)) { exit 0 }

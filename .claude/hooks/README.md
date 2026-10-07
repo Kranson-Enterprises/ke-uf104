@@ -49,6 +49,25 @@ crashed the IDE launch on 2026-06-27. Wired in `settings.json` as:
 
 Enforces the rule in [../rules/quote-paths-with-spaces.md](../rules/quote-paths-with-spaces.md).
 
+### `protect-generated-output.ps1` — block edits to generated output (PreToolUse)
+
+Blocks `Write`/`Edit`/`NotebookEdit` to **compiler-generated** Uniface artifacts —
+generated DSP client JS (`**/dspjs/*.js`), DSP runtime pages (`*.dsp`), deployed
+`webapps/uniface/` web output, the `project/resources/` compiled tree, and compiled
+runtime objects (`*.frm/.rpt/.svc/.cpt`). These are overwritten on every compile, so
+hand-edits are silently lost; the source of truth is the repository object. Wired in
+`settings.json` under the `Write|Edit|NotebookEdit` matcher. Enforces
+[../rules/uniface-dsp-web-conventions.md](../rules/uniface-dsp-web-conventions.md) and
+[../rules/uniface-repository-source-of-truth.md](../rules/uniface-repository-source-of-truth.md).
+Same fail-open design as above (any parse error / non-matching path → exit 0). For a
+genuinely hand-maintained `/ext` `.hts` layout you own, write it via a shell command
+rather than the Edit tool. Test:
+
+```powershell
+'{"tool_name":"Edit","tool_input":{"file_path":"x/webapps/uniface/dspjs/a.js"}}' |
+  pwsh -NoProfile -File .claude/hooks/protect-generated-output.ps1; $LASTEXITCODE  # 2 = blocked
+```
+
 #### Caveats (this is the "tricky" part — read before trusting it)
 
 - **Heuristic, not a shell parser.** It cannot, in general, know whether a space
@@ -79,7 +98,42 @@ Enforces the rule in [../rules/quote-paths-with-spaces.md](../rules/quote-paths-
   **no** spaces, so it works — but it is quoted anyway to stay correct if the
   project is ever cloned under `C:\Program Files\...` or similar.
 
-To test it manually, pipe a sample payload to the script and check the exit code:
+### `preflight-powershell.ps1` — PowerShell version/update advisory (SessionStart + dot-sourced)
+
+Keeps the workspace on a supported, patched PowerShell as our `.ps1` tooling grows.
+**Advisory only — it never blocks** (always returns; never `exit`s). Wired two ways:
+
+- **SessionStart** in `settings.json` — runs `-Announce` once per session and reports
+  the version status.
+- **Dot-sourced** at the top of the other two PreToolUse hooks
+  (`. "$PSScriptRoot/preflight-powershell.ps1"; Invoke-PowerShellPreflight`) inside a
+  `try/catch`, so it also checks during normal work but can never affect the host hook's
+  stdin handling or exit code. Advisory output is throttled to once / 6h.
+
+Compares `$PSVersionTable.PSVersion` against `$MinimumVersion` (7.4 LTS floor) and
+`$LatestKnownVersion` (7.6.3, bump as new releases ship) and warns via stderr if on
+Windows PowerShell 5.1, below the LTS floor, or behind the latest.
+
+**Security posture (deliberate — see [worklog/015](../../worklog/015-powershell-security-and-preflight.md)):**
+
+- **Secure by default = offline.** The update check compares against the hard-coded
+  `$LatestKnownVersion`; an auto-run hook making surprise outbound calls is itself a
+  risk, so the live "latest release" lookup is **opt-in** via `UNIFACE_PREFLIGHT_ONLINE=1`.
+- When opted in, the network call is **pinned HTTPS** (no user input → no SSRF), **3s
+  timeout**, **throttled to once / 24h** via a temp state file
+  (`$env:TEMP\uniface-claude-preflight\`), **fail-silent** on any error (offline must
+  never break a hook), and only a **version string** is parsed (nothing executed).
+- `UNIFACE_PREFLIGHT_SILENT=1` suppresses all advisory output.
+
+Test:
+
+```powershell
+pwsh -NoProfile -File .claude/hooks/preflight-powershell.ps1   # announce; exit 0
+# simulate "behind": dot-source, raise the target, force a message
+pwsh -NoProfile -Command ". .\.claude\hooks\preflight-powershell.ps1; `$script:LatestKnownVersion=[version]'9.9.9'; Invoke-PowerShellPreflight -Announce"
+```
+
+To test the path hooks manually, pipe a sample payload to the script and check the exit code:
 
 ```powershell
 '{"tool_name":"PowerShell","tool_input":{"command":"& C:\\Program Files\\x.exe"}}' |

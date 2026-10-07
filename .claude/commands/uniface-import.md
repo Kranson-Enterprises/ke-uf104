@@ -7,14 +7,25 @@ allowed-tools: Read, PowerShell
 Import development-object definitions from XML into the repository using `/imp`.
 
 Steps:
-1. Resolve exe / adm / project (read `usys.ini [install]`).
-2. Run, quoting spaced paths:
+1. Resolve exe / adm / project (read `usys.ini [install]`). For a non-default
+   repository (e.g. a WorkArea sandbox), also pass `/dir=<workdir>` so `.\dbms\usys.db`
+   resolves to that repo, and set the working dir to match.
+2. Run, quoting spaced paths. **`ide.exe` is a GUI-subsystem exe: PowerShell's `&` does
+   NOT wait for it and leaves `$LASTEXITCODE` blank** — use `Start-Process -Wait
+   -PassThru` and read `.ExitCode` (a bare `&` gives a false/blank gate). (cmd/`.bat`
+   *does* block on it, so `build.bat`'s `%ERRORLEVEL%` is fine — this trap is
+   PowerShell-only.)
+   ```powershell
+   $p = Start-Process "<root>\common\bin\ide.exe" `
+     -ArgumentList "/adm=<root>\uniface\adm","/imp","<file-or-wildcard>","/nos" `
+     -WorkingDirectory "<workdir>" -Wait -PassThru -NoNewWindow `
+     -RedirectStandardOutput "$env:TEMP\imp.out" -RedirectStandardError "$env:TEMP\imp.err"
+   $p.ExitCode   # 0 = success, 1 = failure
    ```
-   & "<root>\common\bin\ide.exe" "/adm=<root>\uniface\adm" /imp $ARGUMENTS
-   ```
-   Useful sub-switches: `/nos` (no supersede), `/com=N` (commit freq), `/int=N`.
-3. Check `$LASTEXITCODE`: **0 = success, 1 = failure** (read the transcript/log
-   for detail).
+   Useful sub-switches: `/nos` (allow supersede), `/com=N` (commit freq), `/int=N`.
+   For a whole class-subfolder tree in dependency order, use [/uniface-import-batch](uniface-import-batch.md).
+3. Check `$p.ExitCode`: **0 = success, 1 = failure**. Console is usually silent — read
+   the Uniface message log under `usyslog:` (from `usys.ini`) for detail.
 
 Warnings:
 - `/imp` only accepts files made by Uniface **export** — files from **Data Copy**

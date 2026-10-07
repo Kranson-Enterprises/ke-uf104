@@ -34,6 +34,7 @@ docs **unless** flagged with a marker:
   - [1.4 Source management: the repository is the source of truth](#14-source-management-the-repository-is-the-source-of-truth)
   - [1.5 What you develop where (Workspace organization)](#15-what-you-develop-where-workspace-organization)
   - [1.6 DSP web components: architecture and capabilities](#16-dsp-web-components-architecture-and-capabilities)
+  - [1.7 Building a component: the construct workflow](#17-building-a-component-the-construct-workflow)
 - [2. Deployment packaging](#2-deployment-packaging)
   - [2.1 The mental model](#21-the-mental-model)
   - [2.2 Where compiled objects go](#22-where-compiled-objects-go)
@@ -124,13 +125,13 @@ but the *tooling and workflow* are new.
 The Uniface 10 IDE is itself a Uniface application running on the Uniface runtime.
 Work is organized in a **project directory** plus a **repository database**:
 
-- The **project directory** (CE default
-  `C:\Users\<user>\Rocket Uniface 10 Community Edition\project\`, recorded as
-  `project=` in `usys.ini [install]`) holds the dev assignment, the `.\dbms\`
-  repository databases, and the `.\resources` compile output. In practice the
-  IDE's **"Workspace" is this project context** — the repository (the loaded set
-  of projects/components, e.g. the MusicCart `prj: MUSICSHOP`) plus its project
-  directory. What lives where is detailed in
+- The **project directory** (recorded as `project=` in `usys.ini [install]` — on
+  this machine the in-repo `C:\Users\Bob\source\uniface\ke-uf104\uniface\project`;
+  the CE default was previously under the user profile) holds the dev assignment,
+  the `.\dbms\` repository databases, and the `.\resources` compile output. In
+  practice the IDE's **"Workspace" is this project context** — the repository (the
+  loaded set of projects/components) plus its project directory. What lives where
+  is detailed in
   [§1.5](#15-what-you-develop-where-workspace-organization).
 - **Development objects live in a repository (a DBMS).** For Community Edition the
   repository is a **bundled SQLite database** — `.\dbms\usys.db` via the `SLE`
@@ -154,9 +155,17 @@ signal.
 
 #### Launching the IDE from the command line (the spaced-path gotcha)
 
-The install paths contain spaces, so the `/adm` switch **must quote the entire
+When an install path contains spaces, the `/adm` switch **must quote the entire
 token** (Rocket's own Start-Menu shortcut does exactly this), and the IDE expects
-to start in the project working directory:
+to start in the project working directory. This machine's current install is
+**space-free** (`C:\ref`), so the live command is simply:
+
+```
+"C:\ref\common\bin\ide.exe" "/adm=C:\ref\uniface\adm" ?
+```
+
+The cautionary case — a **spaced** install, where the whole `/adm` token MUST be
+quoted or the IDE fails to find `usys.ini`:
 
 ```
 "C:\Program Files\Rocket Uniface 10 Community Edition\common\bin\ide.exe" "/adm=C:\Program Files\Rocket Uniface 10 Community Edition\uniface\adm" ?
@@ -165,7 +174,8 @@ to start in the project working directory:
 - Quote `"/adm=...path..."` as one argument — quoting only the path (or not at all)
   makes Uniface look for `usys.ini` in the wrong place and the IDE exits
   immediately. `usys.ini` lives at `uniface\adm\usys.ini` (where `/adm` points).
-- Working directory: `C:\Users\<user>\Rocket Uniface 10 Community Edition\project\`.
+- Working directory: the `usys.ini [install] project=` value (here, the in-repo
+  `…\ke-uf104\uniface\project`).
 - The trailing `?` is a real argument from Rocket's shortcut (not a typo) — it
   opens the command-line dialog.
 
@@ -228,8 +238,9 @@ to start in the project working directory:
 - **Import auto-migrates** compatible data and rejects incompatible/copy-created
   data. The separate **Data Copy** facility (`/cpy`, `$ude("copy")`) is **not**
   import-compatible — use export/import for VCS, **never** `/cpy` for definitions.
-- For this repo, that's the Uniface↔Git bridge: export objects as XML into
-  `components/` / `src/` and commit them as the VCS-visible serialization. Full
+- For this repo, that's the Uniface↔Git bridge: export objects as XML into the
+  **WAS-compatible `workarea/`** tree (one file per object) and commit them as the
+  VCS-visible serialization. Full
   IDE-vs-VSCode analysis:
   [worklog/005](../worklog/005-v10-source-of-truth-and-vscode-workflow.md).
 
@@ -250,6 +261,13 @@ to start in the project working directory:
   `0099 - Command line string not acceptable` (and exit code 1). The switch
   reference has no `/exp`. Use the IDE **Export** action or ProcScript
   `$ude("export")`; only **`/imp`** exists for the command line (import).
+  - 🔎 *Don't confuse this with `/sto`.* The Library documents `/sto /mwr=ws`,
+    `/sto /mwr=com`, and `/sto /lan=jav`, which **do** "export" from the command
+    line — but they emit **deployment artifacts** (a WSDL file, a self-registering
+    COM interface DLL, or Java call-in wrappers) generated from a service
+    **signature**. That is service *packaging*, not the repository-definition XML
+    used for VCS, and its output is **not** `/imp`-importable. So "no command-line
+    export switch" remains true for the **repository round-trip** facility.
 
 > The repository-as-source-of-truth rule:
 > [.claude/rules/uniface-repository-source-of-truth.md](../.claude/rules/uniface-repository-source-of-truth.md).
@@ -404,6 +422,51 @@ that is "supported by the engine, not promised by the vendor."
 > [/uniface-dsp-review](../.claude/commands/uniface-dsp-review.md); the always-apply
 > rule is
 > [.claude/rules/uniface-dsp-web-conventions.md](../.claude/rules/uniface-dsp-web-conventions.md).
+
+### 1.7 Building a component: the construct workflow
+
+The repeatable v10 sequence to build and run a component, distilled from Rocket's
+**public 10.4 tutorials** (✅ = stated in the tutorial · ⚠️ = implied). This is the
+"how you actually make one" companion to the object types (§1.2) and editors (§1.3).
+
+1. **Create** — pick a component type: Form, Server Page (USP/DSP), Service (ESV), or
+   Session Service (SSV). ✅
+2. **Define structure** — add the modeled entities/fields the component uses. ✅
+3. **Script behavior** — write ProcScript in triggers (`trigger apStart`,
+   `trigger CUSTOMER.validate`, …). ✅
+4. **Create layout** — design the form/web layout; skipped for headless services. ✅/⚠️
+5. **Compile** — the **Compile** button checks for errors and builds the runtime
+   object (`.frm`/`.svc`/`.dsp`…). ✅
+6. **Test** — **Actions → Test**; tune the test environment via test logicals in
+   `ide.asn`. ✅
+
+**Services (no UI; compile to `.svc`).** Two roles in the 4-tier flow Presentation →
+**SSV** (business tier) → **ESV** (data-access tier) → Database:
+- **Entity Service (ESV)** wraps **exactly one** entity/table and owns its Data Access
+  Logic + CRUD; validation belongs in the `write`/`validate` triggers. Mind
+  "chattiness" — per-call instantiation cost adds up in loops. ✅
+- **Session Service (SSV)** holds multi-entity business logic, is stateless per
+  request, and is the **transaction controller** (`commit`/`rollback`). Call an
+  operation with `activate "SVC_NAME".operation(in_x, out_y)`; operation bodies are
+  `entry <op> … end`. **Never** use interactive statements (`askmess`, `display`,
+  `print`, `run`, …) in a service — they hang it. ✅
+
+**Application Server Shell** — a module (Shell Type **`APU`**) that defines how the
+server app starts and routes requests: **`receiveMessage`** dispatches incoming
+requests to components; **`preRequest`/`postRequest`** wrap each activation (auth,
+logging). Create it by dragging the **Windows Shell** template onto the project, set
+Shell Type `APU`, script init logic, then compile. ✅
+
+**Running an app** — `uniface.exe <appshell>` starts the runtime against that shell; a
+copied `myapp.exe` auto-loads matching `myapp.ini`/`.asn` but is **locked to one app**
+(only the original `uniface.exe` can run different apps by parameter). ✅
+
+> Source: Rocket's public 10.4 tutorials (`dev.to/petercode`). The *definition-side*
+> mechanics (the signature/operations editor, `.asn` registration, runtime
+> urouter/userver plumbing) are thin in these public guides and are tracked for the
+> gated *Getting Started* — see
+> [worklog/011](../worklog/011-rebaseline-and-tutorial-review.md). For version control
+> of what you build, see §1.4 (the repository is the source of truth).
 
 ---
 
@@ -621,8 +684,8 @@ For both the AI tooling and the human operator:
   only source of truth and Claude/Git can actually see and review your objects.
 - **Name a "known-good runtime version"** per deployable; pin it. Mixed runtime
   versions across client apps is a common support trap.
-- **For Claude-assisted workflow:** point Claude at exported sources (`src/`,
-  `components/`) and `.asn` files — it can review ProcScript, diff environment
+- **For Claude-assisted workflow:** point Claude at the exported objects in `workarea/`
+  and `.asn` files — it can review ProcScript, diff environment
   configs, and help script packaging/monitoring once the artifacts are in-repo.
 - **For the human operator:** build a one-page per-app runbook (assignment location,
   DB target, Router/Server ports, license location, start/stop steps).

@@ -20,13 +20,49 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 | `/uniface-launch-ide` | Launch the IDE with correctly quoted `/adm` + project workdir. |
 | `/uniface-compile` | CLI compile (`/all /nodebug` by default; targeted via args). |
 | `/uniface-import` | Import XML definitions (`/imp`) with exit-code check. |
+| `/uniface-import-batch` | Ordered, exit-code-gated batch `/imp` of a WorkArea-shaped class-subfolder tree. |
+| `/uniface-package-uar` | Package compiled objects into a deployable `.uar` (compile-to-UAR or `urm`) + verify. |
 | `/uniface-export` | Export to XML for VCS (IDE / `$ude` — no CLI export switch). |
+| `/uniface-workarea-sync` | Sync repo ↔ `workarea/` (status/pull/push; dry-run by default; WAS-emulation skeleton). |
 | `/uniface-gensql` | Generate target-DBMS DDL (`/genSql`) for deployment. |
 | `/uniface-asn-review` | Review an `.asn` against the dev→prod checklist. |
 | `/uniface-cli` | Print the verified CLI cheat-sheet (no execution). |
 | `/uniface-dsp-review` | Review or scaffold DSP client JS + layout against the verified API. |
+| `/uniface-endpoint-review` | Audit a component for character-mode + web (DSP/USP) portability — GUI-only props/triggers, text overflow, misplaced logic. |
+| `/uniface-name-check` | Validate a proposed object name against the naming & reserved-word rules (length, charset, reserved, namespace). |
 | `/worklog-new` | Create the next sequential `worklog/00X` entry. |
+
+## Testing suite (two-tier: model-unit + endpoint E2E)
+
+The verified two-tier testing strategy (Library 10.4) — a preferred **endpoint-independent
+ProcScript unit layer** run in Uniface's built-in test environment, plus **bring-your-own
+browser/GUI E2E** where Uniface exposes the automation handles. Background:
+[worklog/033](../../worklog/033-uniface-testing-approaches-and-tooling.md).
+
+| Command | What it does |
+| --- | --- |
+| `/uniface-test-plan` | Read-only: layered, endpoint-tagged test plan (Tier-1 model-unit vs Tier-2 E2E, in priority order). |
+| `/uniface-unit-test` | Scaffold/extend a ProcScript unit-test module (UTEST pattern) for a model/entity-service op, then run it. |
+| `/uniface-test` | Run a component/service/app-shell in the built-in test env (`/tst`, `+/deb`), endpoint-aware, with headless hardening. |
+| `/uniface-webtest` | Scaffold a browser E2E harness (Playwright default ⚠️) for a DSP/USP + CEF rich-web attach (`Accessibility=TestMode`/`DebugPort`). |
+
+Guided flows live in skills: **`uniface-test-harness-setup`** (one-time scaffold + dev-only
+asn wiring) and **`uniface-tdd-loop`** (model-first red→green loop against SQLite).
 
 **Note:** the compile/import/gensql commands run `ide.exe` against the
 Repository; if it has unmigrated/incompatible data, CLI runs fail — open the
 interactive IDE once to migrate first.
+
+## WAS plugin build (WorkArea Support — non-default group)
+
+WAS-specific commands for building the Work Area Support IDE plugin
+(`VersionControl.uar`) from the sibling `WASListener` clone. **Non-commercial license —
+personal skill-refresh only** (worklog 021). Kept separate from the `/uniface-*` defaults.
+
+| Command | What it does |
+| --- | --- |
+| `/was-build` | Orchestrator/reference for the whole build (Phases A–D) — see [was-build.md](was-build.md). |
+| `/was-package` | Build `IdePlugin\VersionControl.uar` (compile-to-UAR, auto asn revert, verify). |
+
+Also used by the group: `/uniface-launch-ide --was` (sandbox launch),
+`/uniface-import-batch` (Phase B). Design: [docs/uniface-was-plugin-integration.md](../../docs/uniface-was-plugin-integration.md).

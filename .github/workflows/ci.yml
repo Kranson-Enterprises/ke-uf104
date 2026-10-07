@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
 
+# Least privilege: this build needs only to read the repo. Override per-job if a
+# step ever needs more (e.g. packages: write).
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: windows-latest

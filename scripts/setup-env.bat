@@ -13,16 +13,23 @@ REM  .claude\rules\quote-paths-with-spaces.md and worklog/002-003.
 REM ============================================================================
 
 REM -- Install root (contains common\bin\ide.exe and uniface\adm). -------------
-REM    CE default shown; change to your install root.
-set "UNIFACE_HOME=C:\Program Files\Rocket Uniface 10 Community Edition"
+REM    This machine's install is C:\ref (space-free, chosen deliberately - see
+REM    worklog/011). Change to your install root if different.
+set "UNIFACE_HOME=C:\ref"
 
 REM -- Derived locations (normally no need to edit). ---------------------------
 set "IDE_EXE=%UNIFACE_HOME%\common\bin\ide.exe"
 set "UNIFACE_ADM=%UNIFACE_HOME%\uniface\adm"
 
-REM -- Project working dir = the  [install] project=  value in usys.ini
-REM    (%UNIFACE_ADM%\usys.ini). CE default is under the user profile. ---------
-set "UNIFACE_PROJECT=%USERPROFILE%\Rocket Uniface 10 Community Edition\project"
+REM -- Project working dir = the  [install] project=  value in usys.ini.
+REM    Resolve it FROM usys.ini so a moved project self-heals (workspace rule:
+REM    resolve paths from usys.ini [install]). Fall back to the in-repo
+REM    uniface\project if the ini cannot be read. ----------------------------
+set "UNIFACE_PROJECT="
+if exist "%UNIFACE_ADM%\usys.ini" (
+  for /f "usebackq tokens=1,* delims==" %%A in (`findstr /b /i "project=" "%UNIFACE_ADM%\usys.ini"`) do set "UNIFACE_PROJECT=%%B"
+)
+if not defined UNIFACE_PROJECT set "UNIFACE_PROJECT=%~dp0..\uniface\project"
 
 REM -- Put the Uniface binaries on PATH (quoted because of the spaces). --------
 set "PATH=%UNIFACE_HOME%\common\bin;%PATH%"

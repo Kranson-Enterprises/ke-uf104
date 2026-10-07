@@ -6,8 +6,9 @@ This file is committed and loaded automatically at the start of every session.
 ## Project overview
 
 - Scaffold for a Uniface 10 project on **Windows**.
-- `components/` — Uniface components (`*.com`).
-- `src/` — sources.
+- `workarea/` — the Git-tracked, **WAS-compatible** serialization of repository objects
+  (one XML per object, class subfolders); the **single source-of-truth serialization**
+  (the older flat `components/`/`src/` scaffold was retired — worklog 030).
 - `scripts/` — build/env batch scripts (`setup-env.bat`, `build.bat`).
 - `docs/` — documentation.
 - `worklog/` — running work notes.
@@ -47,6 +48,49 @@ every saved memory with a one-line hook. See
   `OnChange` fires on interactive change only; author HTML5 and target evergreen
   browsers (ES2015 floor).
   [.claude/rules/uniface-dsp-web-conventions.md](.claude/rules/uniface-dsp-web-conventions.md).
+- **WorkArea file↔repository sync** — the repository is the master of record and the
+  Git-tracked `workarea/` tree is the **WAS-compatible** serialization (one XML per
+  object, class subfolders); sync is export→WorkArea / import←WorkArea, **dry-run by
+  default**, never `/cpy`, and honor the "dirty"/orphan guard.
+  [.claude/rules/uniface-workarea-sync.md](.claude/rules/uniface-workarea-sync.md);
+  design in [docs/uniface-workarea.md](docs/uniface-workarea.md).
+- **Uniface export staging** — artifacts the Uniface IDE/engine writes (the Export
+  action, `$ude("export")`, `/genSql` dumps) stage in the **gitignored project
+  `scratch/`** folder — **never** the Claude scratchpad (session-specific/ephemeral) or
+  ad-hoc `C:\temp`. WorkArea objects still go to `workarea/`; runtime/wasv output stays
+  where the `.asn` puts it. Promote from `scratch/` into the tracked tree by an explicit
+  copy. [.claude/rules/uniface-export-staging.md](.claude/rules/uniface-export-staging.md).
+- **Character-mode & web endpoints (target shape)** — this app delivers **character-mode
+  Forms to a non-GUI terminal** and **web server pages (DSP/USP)**; rich Windows GUI is
+  exercise-only. Unrecognized GUI properties are **silently ignored** (not errors) on the
+  character endpoint, character mode renders **Unifields not widgets** (basic video attrs
+  only) and **truncates** overflowing text — so name the endpoint and flag GUI-only
+  assumptions. [.claude/rules/uniface-character-and-web-endpoints.md](.claude/rules/uniface-character-and-web-endpoints.md);
+  review with [/uniface-endpoint-review](.claude/commands/uniface-endpoint-review.md).
+- **Trigger & ProcScript placement** — Uniface 10 **module-overlay inheritance**; a local
+  same-named trigger **silently overrides** inherited modeled code. Keep shared business
+  rules + DB I/O in the **model / entity services**, presentation components thin; field
+  triggers available depend on the rendering endpoint.
+  [.claude/rules/uniface-trigger-placement.md](.claude/rules/uniface-trigger-placement.md).
+- **Object naming & reserved words** — ≤ 60 chars, `A–Z 0–9 _`, must begin with a letter,
+  **case-folded** (can't distinguish by case); component namespace is **global**; avoid
+  reserved words; ProcScript file names must be **cross-platform** for the Unix/Linux
+  target. [.claude/rules/uniface-object-naming.md](.claude/rules/uniface-object-naming.md);
+  validate with [/uniface-name-check](.claude/commands/uniface-name-check.md).
+- **UAR packaging & hardening** — a `.uar` is a ZIP of compiled objects in Uniface's
+  standardized type-subdirs; build it by **compile-to-UAR** (`$RESOURCES_OUTPUT=.uar`) or
+  **`urm copy`** (there is no one-click project button). `[SETTINGS]` **does not strip
+  trailing `;` inline comments** (they corrupt the value — use own-line comments only).
+  Production = `/all /nodebug`; harden releases with **`cert.exe`** (archive certification)
+  + **`pathscrambler`** (asn secrets).
+  [.claude/rules/uniface-uar-packaging-and-hardening.md](.claude/rules/uniface-uar-packaging-and-hardening.md);
+  build with [/uniface-package-uar](.claude/commands/uniface-package-uar.md).
+- **PowerShell hook & script security** — target patched **PowerShell 7+** (the
+  [preflight](.claude/hooks/preflight-powershell.ps1) advises on version/updates); no
+  surprise network calls from auto-run hooks (network is opt-in, pinned, throttled,
+  fail-silent); never put secrets on the command line; treat hook stdin as untrusted
+  and never `iex` it; fail open for advisories, `exit 2` only for clear violations.
+  [.claude/rules/powershell-hook-security.md](.claude/rules/powershell-hook-security.md).
 
 ## Conventions
 
