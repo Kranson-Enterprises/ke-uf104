@@ -32,6 +32,23 @@ worklog 002/004/005. All embed the spaced-path quoting rule and read `usys.ini`
 | `/uniface-name-check` | Validate a proposed object name against the naming & reserved-word rules (length, charset, reserved, namespace). |
 | `/worklog-new` | Create the next sequential `worklog/00X` entry. |
 
+## Testing suite (two-tier: model-unit + endpoint E2E)
+
+The verified two-tier testing strategy (Library 10.4) — a preferred **endpoint-independent
+ProcScript unit layer** run in Uniface's built-in test environment, plus **bring-your-own
+browser/GUI E2E** where Uniface exposes the automation handles. Background:
+[worklog/033](../../worklog/033-uniface-testing-approaches-and-tooling.md).
+
+| Command | What it does |
+| --- | --- |
+| `/uniface-test-plan` | Read-only: layered, endpoint-tagged test plan (Tier-1 model-unit vs Tier-2 E2E, in priority order). |
+| `/uniface-unit-test` | Scaffold/extend a ProcScript unit-test module (UTEST pattern) for a model/entity-service op, then run it. |
+| `/uniface-test` | Run a component/service/app-shell in the built-in test env (`/tst`, `+/deb`), endpoint-aware, with headless hardening. |
+| `/uniface-webtest` | Scaffold a browser E2E harness (Playwright default ⚠️) for a DSP/USP + CEF rich-web attach (`Accessibility=TestMode`/`DebugPort`). |
+
+Guided flows live in skills: **`uniface-test-harness-setup`** (one-time scaffold + dev-only
+asn wiring) and **`uniface-tdd-loop`** (model-first red→green loop against SQLite).
+
 **Note:** the compile/import/gensql commands run `ide.exe` against the
 Repository; if it has unmigrated/incompatible data, CLI runs fail — open the
 interactive IDE once to migrate first.
